@@ -1,0 +1,3496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BCSO — Système de Rapports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700&family=Share+Tech+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #06080f;
+      --dark: #0c1018;
+      --dark-2: #111620;
+      --dark-3: #181f2e;
+      --dark-4: #1c2540;
+      --gold: #d4a017;
+      --gold-2: #f0bc30;
+      --gold-dim: rgba(212,160,23,0.15);
+      --gold-line: rgba(212,160,23,0.3);
+      --gold-line-strong: rgba(212,160,23,0.45);
+      --red: #c0392b;
+      --red-dim: rgba(192,57,43,0.15);
+      --red-line: rgba(192,57,43,0.35);
+      --green: #1abc9c;
+      --green-dim: rgba(26,188,156,0.1);
+      --white: #e8eaf0;
+      --grey: #4a5568;
+      --grey-2: #2d3447;
+      --grey-light: #8899bb;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Barlow Condensed', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Scanlines overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ════════════════════════════════════════
+       PAGE ACCUEIL
+    ════════════════════════════════════════ */
+
+    /* Fond dramatique */
+    #page-home .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(212,160,23,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 10% 20%, rgba(192,57,43,0.05) 0%, transparent 50%),
+        var(--black);
+    }
+    .bg-diagonal {
+      position: fixed;
+      top: 0; right: 0;
+      width: 45%;
+      height: 100%;
+      background: linear-gradient(135deg, transparent 0%, rgba(212,160,23,0.025) 100%);
+      clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+
+    /* ── HEADER ACCUEIL ── */
+    #page-home header {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 48px;
+      height: 64px;
+      border-bottom: 1px solid rgba(212,160,23,0.2);
+      background: rgba(6,8,15,0.95);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left .sys-info {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: rgba(212,160,23,0.5);
+      letter-spacing: 0.12em;
+      line-height: 1.6;
+    }
+    .sys-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      animation: flicker 3s infinite;
+    }
+    @keyframes flicker { 0%,95%,100%{opacity:1} 96%,98%{opacity:0.2} }
+
+    .header-center {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: rgba(212,160,23,0.7);
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .header-right {
+      text-align: right;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 24px 40px;
+      text-align: center;
+    }
+    .logo-wrap {
+      position: relative;
+      margin-bottom: 32px;
+      animation: appear 1s ease both;
+    }
+    .logo-box {
+      width: 100px; height: 100px;
+      border: 1px solid var(--gold-line);
+      background: var(--dark-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transform: rotate(45deg);
+    }
+    .logo-box::before, .logo-box::after {
+      content: '';
+      position: absolute;
+      border: 1px solid rgba(212,160,23,0.15);
+    }
+    .logo-box::before { inset: 6px; }
+    .logo-box::after { inset: 12px; }
+    .logo-inner {
+      transform: rotate(-45deg);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px;
+      color: rgba(212,160,23,0.5);
+      text-align: center;
+      line-height: 1.4;
+      letter-spacing: 0.08em;
+    }
+    .logo-glow {
+      position: absolute;
+      inset: -20px;
+      background: radial-gradient(circle at center, rgba(212,160,23,0.08), transparent 70%);
+    }
+    @keyframes appear {
+      from { opacity: 0; transform: scale(0.85) translateY(-10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .hero-eyebrow {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      animation: appear 1s ease 0.2s both;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 90px);
+      letter-spacing: 0.06em;
+      line-height: 0.9;
+      color: var(--white);
+      animation: appear 1s ease 0.3s both;
+    }
+    .hero-title .accent { color: var(--gold); }
+    .hero-rule {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 28px 0;
+      width: 360px;
+      animation: appear 1s ease 0.4s both;
+    }
+    .hero-rule .line { flex: 1; height: 1px; background: var(--gold-line); }
+    .hero-rule .diamond { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); }
+    .hero-sub {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      animation: appear 1s ease 0.45s both;
+    }
+
+    /* ── CARDS ── */
+    .cards {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+      animation: appear 1s ease 0.6s both;
+    }
+    @media (max-width: 768px) { .cards { grid-template-columns: 1fr; padding: 0 20px 60px; } }
+
+    .card {
+      position: relative;
+      background: var(--dark-2);
+      border: 1px solid rgba(255,255,255,0.04);
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .card:hover { border-color: rgba(212,160,23,0.25); }
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-num-bg {
+      position: absolute;
+      top: -20px; right: -10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 130px;
+      color: rgba(255,255,255,0.02);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+    .card-inner { padding: 36px 32px 32px; position: relative; }
+    .card-code {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.18em;
+      color: var(--gold); margin-bottom: 6px; opacity: 0.7;
+    }
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px; letter-spacing: 0.04em;
+      color: var(--white); line-height: 1; margin-bottom: 16px;
+    }
+    .card-divider {
+      width: 40px; height: 2px;
+      background: var(--gold); margin-bottom: 16px;
+      transition: width 0.3s ease;
+    }
+    .card:hover .card-divider { width: 80px; }
+    .card-desc {
+      font-size: 14px; font-weight: 300;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.7; margin-bottom: 32px; letter-spacing: 0.03em;
+    }
+    .card-cta {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 0.18em;
+      color: var(--gold); text-transform: uppercase;
+      border: none; background: none; cursor: pointer; padding: 0;
+      transition: gap 0.2s;
+    }
+    .card:hover .card-cta { gap: 18px; }
+    .cta-arrow { width: 30px; height: 1px; background: var(--gold); position: relative; }
+    .cta-arrow::after {
+      content: '';
+      position: absolute;
+      right: 0; top: -3px;
+      width: 7px; height: 7px;
+      border-top: 1px solid var(--gold);
+      border-right: 1px solid var(--gold);
+      transform: rotate(45deg);
+    }
+    .card:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 20%; right: -1px;
+      width: 1px; height: 60%;
+      background: linear-gradient(to bottom, transparent, rgba(212,160,23,0.15), transparent);
+    }
+    .card.danger .card-code { color: #e74c3c; }
+    .card.danger .card-divider { background: #e74c3c; }
+    .card.danger .card-cta { color: #e74c3c; }
+    .card.danger .cta-arrow { background: #e74c3c; }
+    .card.danger .cta-arrow::after { border-color: #e74c3c; }
+    .card.danger::before { background: #e74c3c; }
+
+    /* ── FOOTER ACCUEIL ── */
+    #page-home footer {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      border-top: 1px solid rgba(212,160,23,0.1);
+    }
+    #page-home footer span {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.12em;
+    }
+
+    /* ════════════════════════════════════════
+       PAGE RAPPORT STANDARD
+    ════════════════════════════════════════ */
+
+    #page-form001 .bg-layer {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,160,23,0.05) 0%, transparent 60%), var(--black);
+    }
+
+    /* ── HEADER FORM ── */
+    #page-form001 header {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 48px; height: 60px;
+      border-bottom: 1px solid var(--gold-line);
+      background: rgba(6,8,15,0.97);
+    }
+    #page-form001 .header-left { display: flex; align-items: center; gap: 10px; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.15em; color: var(--gold); opacity: 0.6;
+      background: none; border: 1px solid var(--gold-line);
+      padding: 6px 12px; cursor: pointer; text-decoration: none;
+      transition: opacity 0.2s, border-color 0.2s;
+    }
+    .back-btn:hover { opacity: 1; border-color: var(--gold-line-strong); }
+    .reset-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.15em; color: var(--grey-light); opacity: 0.5;
+      background: none; border: 1px solid rgba(136,153,187,0.2);
+      padding: 6px 12px; cursor: pointer;
+      transition: opacity 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .reset-btn:hover { opacity: 1; border-color: rgba(136,153,187,0.5); color: var(--white); }
+    .reset-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; }
+
+    .back-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; }
+
+    /* ── TITLE BAR ── */
+    .page-title-bar {
+      position: relative; z-index: 5;
+      padding: 36px 48px 28px;
+      border-bottom: 1px solid rgba(212,160,23,0.08);
+    }
+    .title-kicker { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--gold); opacity: 0.6; margin-bottom: 8px; }
+    .title-main { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 0.06em; color: var(--white); line-height: 1; }
+    .title-main span { color: var(--gold); }
+    .title-rule { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+    .title-rule .line { flex:1; height: 1px; background: var(--gold-line); }
+    .title-rule .diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
+    .info-banner {
+      margin-top: 16px;
+      padding: 10px 16px;
+      background: rgba(212,160,23,0.06);
+      border: 1px solid var(--gold-line);
+      border-left: 3px solid var(--gold);
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      color: rgba(212,160,23,0.7); letter-spacing: 0.08em; line-height: 1.8;
+    }
+
+    /* ── MAIN GRID ── */
+    .main-grid {
+      position: relative; z-index: 5;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2px; padding: 2px 0;
+    }
+    @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--dark-2);
+      padding: 32px 36px;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.12em; color: var(--gold); margin-bottom: 4px; }
+    .panel-divider { width: 40px; height: 2px; background: var(--gold); margin-bottom: 24px; }
+
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.2em;
+      color: var(--gold); opacity: 0.7;
+      text-transform: uppercase;
+      margin: 24px 0 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--gold-line); }
+    .section-label:first-of-type { margin-top: 0; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .form-group { margin-bottom: 12px; }
+
+    label {
+      display: block;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.12em;
+      color: var(--grey-light); margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--dark-3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--gold-line);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px; font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-bottom-color: var(--gold);
+      background: rgba(212,160,23,0.04);
+    }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.18); font-size: 13px; }
+    textarea { resize: vertical; min-height: 90px; }
+    select option { background: var(--dark-3); }
+
+    .defcon-select { border-bottom-color: var(--red-line) !important; }
+    .defcon-select:focus { border-bottom-color: var(--red) !important; }
+
+    /* CODE PÉNAL */
+    .search-wrap { position: relative; margin-bottom: 14px; }
+    .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; stroke: var(--grey); fill: none; }
+    .search-wrap input { padding-left: 36px; }
+
+    .penal-list { max-height: 380px; overflow-y: auto; padding-right: 4px; }
+    .penal-list::-webkit-scrollbar { width: 4px; }
+    .penal-list::-webkit-scrollbar-track { background: var(--dark); }
+    .penal-list::-webkit-scrollbar-thumb { background: var(--gold-line); }
+    .penal-list::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    .category-header {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.2em;
+      color: var(--gold); opacity: 0.5;
+      padding: 14px 0 6px;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .category-header::after { content: ''; flex: 1; height: 1px; background: var(--gold-line); }
+
+    .infraction-item {
+      padding: 11px 14px; margin-bottom: 4px;
+      background: var(--dark-3);
+      border: 1px solid transparent;
+      border-left: 3px solid var(--grey-2);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .infraction-item:hover { border-color: var(--gold-line); border-left-color: var(--gold); background: rgba(212,160,23,0.05); }
+    .infraction-item.selected { border-left-color: var(--green); background: var(--green-dim); border-color: rgba(26,188,156,0.15); }
+
+    .inf-article { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--grey-light); opacity: 0.6; letter-spacing: 0.1em; margin-bottom: 3px; }
+    .inf-name { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .inf-name .qty-badge { background: var(--gold); color: var(--black); font-size: 9px; font-weight: 700; padding: 1px 6px; letter-spacing: 0.08em; }
+    .inf-details { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--grey-light); opacity: 0.7; letter-spacing: 0.06em; }
+
+    /* SELECTED INFRACTIONS */
+    .selected-zone {
+      background: var(--dark-3);
+      border: 1px solid var(--green-dim);
+      border-left: 3px solid var(--green);
+      padding: 14px 16px; margin-bottom: 14px; min-height: 70px;
+    }
+    .selected-zone-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--green); opacity: 0.7; margin-bottom: 10px; }
+    .selected-card { background: rgba(0,0,0,0.3); padding: 10px 12px; margin-bottom: 8px; border-left: 2px solid var(--green); }
+    .selected-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .selected-card-name { font-size: 13px; font-weight: 600; color: var(--white); flex: 1; }
+    .remove-btn {
+      background: var(--red-dim); border: 1px solid var(--red-line);
+      color: var(--red); font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.1em; padding: 3px 8px;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .remove-btn:hover { background: var(--red); color: white; }
+    .qty-row { margin-top: 8px; }
+    .qty-row label { color: var(--grey-light); opacity: 0.8; }
+    .qty-input {
+      width: 100%; padding: 6px 10px;
+      background: var(--dark-2); border: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--gold-line);
+      color: var(--white); font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; outline: none; border-radius: 0;
+    }
+    .qty-note { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--grey-light); opacity: 0.5; margin-top: 4px; }
+
+    /* TOTALS */
+    .totals-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .total-box { background: var(--dark-3); border: 1px solid var(--gold-line); padding: 12px 16px; }
+    .total-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--grey-light); opacity: 0.7; margin-bottom: 4px; }
+    .total-value { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.06em; color: var(--gold); }
+
+    /* DRUG REF */
+    .drug-ref {
+      background: rgba(26,188,156,0.04);
+      border: 1px solid rgba(26,188,156,0.12);
+      border-left: 3px solid rgba(26,188,156,0.4);
+      padding: 12px 14px; margin-bottom: 12px;
+    }
+    .drug-ref-row { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.06em; line-height: 1.9; }
+    .drug-soft { color: #4ecdc4; }
+    .drug-hard { color: #e74c3c; }
+    .drug-trafic { color: var(--gold); }
+    .drug-ref-val { color: rgba(255,255,255,0.5); margin-left: 8px; }
+
+    /* OUTPUT PANEL */
+    .output-panel {
+      position: relative; z-index: 5;
+      background: var(--dark-2);
+      border: 1px solid rgba(255,255,255,0.03);
+      border-top: 1px solid rgba(212,160,23,0.08);
+      padding: 32px 36px;
+    }
+    .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .output-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.12em; color: var(--gold); }
+
+    .btn-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.15em;
+      padding: 12px 24px; cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; }
+    .btn-primary { background: var(--gold); color: var(--black); }
+    .btn-primary:hover { background: var(--gold-2); }
+    .btn-secondary { background: var(--dark-3); color: var(--green); border: 1px solid rgba(26,188,156,0.25); }
+    .btn-secondary:hover { background: var(--green); color: var(--black); }
+
+    .output-box {
+      background: var(--dark);
+      border: 1px solid var(--gold-line);
+      padding: 24px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px; line-height: 1.9; letter-spacing: 0.04em;
+      color: rgba(232,234,240,0.85);
+      min-height: 280px; white-space: pre-wrap; overflow-x: auto;
+    }
+    .output-empty { color: rgba(255,255,255,0.15); font-style: normal; letter-spacing: 0.1em; }
+
+    /* FOOTER FORM */
+    #page-form001 footer {
+      position: relative; z-index: 5;
+      border-top: 1px solid var(--gold-line);
+      padding: 16px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(6,8,15,0.97);
+    }
+    #page-form001 footer span { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 0.1em; }
+
+    /* ════════════════════════════════════════
+       PAGE RAPPORT BRAQUAGE — styles spécifiques
+    ════════════════════════════════════════ */
+    #page-form002 .bg-layer {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(192,57,43,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(192,57,43,0.04) 0%, transparent 50%),
+        var(--black);
+    }
+    #page-form002 header {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 48px; height: 60px;
+      border-bottom: 1px solid var(--red-line);
+      background: rgba(6,8,15,0.97);
+    }
+    #page-form002 .header-left { display: flex; align-items: center; gap: 10px; }
+    #page-form002 .sys-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 8px var(--red);
+      animation: flicker 1.5s infinite;
+    }
+    #page-form002 .header-center {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(192,57,43,0.8); text-align: center;
+    }
+    #page-form002 .page-title-bar {
+      position: relative; z-index: 5;
+      padding: 36px 48px 28px;
+      border-bottom: 1px solid rgba(192,57,43,0.12);
+    }
+    #page-form002 .title-kicker { color: var(--red); }
+    #page-form002 .title-main span { color: var(--red); }
+    #page-form002 .title-rule .line { background: var(--red-line); }
+    #page-form002 .title-rule .diamond { background: var(--red); }
+    #page-form002 .info-banner {
+      background: rgba(192,57,43,0.06);
+      border: 1px solid var(--red-line);
+      border-left: 3px solid var(--red);
+      color: rgba(192,57,43,0.8);
+    }
+    #page-form002 .panel-title { color: var(--red); }
+    #page-form002 .panel-divider { background: var(--red); }
+    #page-form002 .section-label { color: var(--red); }
+    #page-form002 .section-label::after { background: var(--red-line); }
+    #page-form002 input[type="text"], #page-form002 textarea, #page-form002 select {
+      border-bottom-color: var(--red-line);
+    }
+    #page-form002 input:focus, #page-form002 textarea:focus, #page-form002 select:focus {
+      border-bottom-color: var(--red);
+      background: rgba(192,57,43,0.04);
+    }
+    #page-form002 .output-title { color: var(--red); }
+    #page-form002 .btn-primary { background: var(--red); color: var(--white); }
+    #page-form002 .btn-primary:hover { background: #e74c3c; }
+    #page-form002 .output-box { border-color: var(--red-line); }
+    #page-form002 footer {
+      position: relative; z-index: 5;
+      border-top: 1px solid var(--red-line);
+      padding: 16px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(6,8,15,0.97);
+    }
+    #page-form002 footer span { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 0.1em; }
+
+    /* Champ issue avec badges */
+    .issue-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
+    .issue-badge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: var(--dark-3);
+      border: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.4);
+      user-select: none;
+    }
+    .issue-badge input[type="checkbox"] { display: none; }
+    .issue-badge.checked { border-color: var(--red-line); color: var(--white); background: var(--red-dim); }
+    .issue-badge .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+    
+    /* ════════════════════════════════════════
+       PAGE RAPPORT INCIDENT — styles spécifiques
+    ════════════════════════════════════════ */
+    #page-form003 .bg-layer {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,160,23,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 10%, rgba(26,188,156,0.04) 0%, transparent 50%),
+        var(--black);
+    }
+    #page-form003 header {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 48px; height: 60px;
+      border-bottom: 1px solid var(--gold-line);
+      background: rgba(6,8,15,0.97);
+    }
+    #page-form003 .header-left { display: flex; align-items: center; gap: 10px; }
+    #page-form003 footer {
+      position: relative; z-index: 5;
+      border-top: 1px solid var(--gold-line);
+      padding: 16px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(6,8,15,0.97);
+    }
+    #page-form003 footer span { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 0.1em; }
+    .dynamic-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+    .dynamic-item { background: var(--dark-3); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--gold-line); padding: 12px 14px; }
+    .dynamic-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .dynamic-item-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: var(--gold); opacity: 0.7; }
+    .dynamic-add-btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--gold); background: var(--gold-dim); border: 1px solid var(--gold-line); padding: 7px 14px; cursor: pointer; transition: all 0.2s; margin-top: 6px; }
+    .dynamic-add-btn:hover { background: var(--gold); color: var(--black); }
+    .dynamic-remove-btn { background: var(--red-dim); border: 1px solid var(--red-line); color: var(--red); font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.1em; padding: 3px 8px; cursor: pointer; transition: all 0.2s; }
+    .dynamic-remove-btn:hover { background: var(--red); color: white; }
+    .action-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .action-item { display: flex; align-items: center; gap: 8px; background: var(--dark-3); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--gold-line); padding: 8px 12px; }
+    .action-item input { flex: 1; border: none; background: transparent; padding: 4px 0; border-bottom: 1px solid var(--gold-line); border-radius: 0; min-width: 0; }
+    .action-item input:focus { border-bottom-color: var(--gold); background: transparent; }
+
+    /* COPY TOAST */
+    .copy-toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9998;
+      background: var(--green); color: var(--black);
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.12em;
+      padding: 10px 20px;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .copy-toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ════════════════════════════════════
+       VARIABLES DOA
+    ════════════════════════════════════ */
+    :root {
+      --blue: #2471a3;
+      --blue-2: #2e86c1;
+      --blue-dim: rgba(36,113,163,0.15);
+      --blue-line: rgba(36,113,163,0.35);
+      --blue-line-strong: rgba(36,113,163,0.55);
+    }
+
+    /* Bouton DOA sur la home */
+    .doa-access-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: 'Share Tech Mono', monospace; font-size: 11px;
+      letter-spacing: 0.2em; color: rgba(46,134,193,0.7);
+      background: rgba(36,113,163,0.06);
+      border: 1px solid var(--blue-line);
+      padding: 12px 28px; cursor: pointer;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .doa-access-btn::before {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--blue-2);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .doa-access-btn:hover { color: var(--blue-2); border-color: var(--blue-line-strong); background: var(--blue-dim); }
+    .doa-access-btn:hover::before { transform: scaleX(1); }
+    .doa-access-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; }
+    .doa-access-wrap {
+      position: relative; z-index: 5;
+      display: flex; justify-content: center;
+      padding: 0 40px 60px;
+    }
+    .doa-access-label {
+      font-family: 'Share Tech Mono', monospace; font-size: 9px;
+      letter-spacing: 0.15em; color: rgba(255,255,255,0.12);
+      text-align: center; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .doa-access-label::before, .doa-access-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+    .doa-section { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; max-width: 400px; }
+
+    /* ════════════════════════════════════
+       PAGE DOA HOME
+    ════════════════════════════════════ */
+    #page-doa-home .bg-layer {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(36,113,163,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 90% 15%, rgba(36,113,163,0.04) 0%, transparent 50%),
+        var(--black);
+    }
+    #page-doa-home header {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 48px; height: 64px;
+      border-bottom: 1px solid var(--blue-line);
+      background: rgba(6,8,15,0.97);
+    }
+    #page-doa-home .header-left { display: flex; align-items: center; gap: 12px; }
+    #page-doa-home .sys-dot { background: var(--blue-2); box-shadow: 0 0 8px var(--blue-2); }
+    #page-doa-home .header-center { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: rgba(46,134,193,0.7); text-align: center; text-transform: uppercase; }
+    #page-doa-home .back-btn { color: var(--blue-2); border-color: var(--blue-line); opacity: 0.6; }
+    #page-doa-home .back-btn:hover { opacity: 1; border-color: var(--blue-line-strong); }
+    #page-doa-home .hero { position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; padding: 50px 24px 36px; text-align: center; }
+    #page-doa-home .hero-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.35em; color: var(--blue-2); text-transform: uppercase; margin-bottom: 12px; }
+    #page-doa-home .hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 8vw, 80px); letter-spacing: 0.06em; line-height: 0.9; color: var(--white); }
+    #page-doa-home .hero-title .accent { color: var(--blue-2); }
+    #page-doa-home .hero-rule .line { background: var(--blue-line); }
+    #page-doa-home .hero-rule .diamond { background: var(--blue-2); }
+    #page-doa-home .cards { position: relative; z-index: 5; display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; max-width: 1100px; margin: 0 auto; padding: 0 40px 70px; }
+    #page-doa-home .card::before { background: var(--blue-2); }
+    #page-doa-home .card:hover { border-color: rgba(46,134,193,0.25); }
+    #page-doa-home .card-code { color: var(--blue-2); }
+    #page-doa-home .card-divider { background: var(--blue-2); }
+    #page-doa-home .card-cta { color: var(--blue-2); }
+    #page-doa-home .cta-arrow { background: var(--blue-2); }
+    #page-doa-home .cta-arrow::after { border-color: var(--blue-2); }
+    #page-doa-home footer { position: relative; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; border-top: 1px solid var(--blue-line); }
+    #page-doa-home footer span { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 0.12em; }
+
+    /* ════════════════════════════════════
+       PAGES FORMULAIRES DOA (communes)
+    ════════════════════════════════════ */
+    .doa-form-page .bg-layer {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(36,113,163,0.06) 0%, transparent 60%),
+        var(--black);
+    }
+    .doa-form-page header {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 48px; height: 60px;
+      border-bottom: 1px solid var(--blue-line);
+      background: rgba(6,8,15,0.97);
+    }
+    .doa-form-page .header-left { display: flex; align-items: center; gap: 10px; }
+    .doa-form-page .sys-dot { background: var(--blue-2); box-shadow: 0 0 8px var(--blue-2); }
+    .doa-form-page .back-btn { color: var(--blue-2); border-color: var(--blue-line); }
+    .doa-form-page .back-btn:hover { border-color: var(--blue-line-strong); }
+    .doa-form-page .header-center { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: rgba(46,134,193,0.7); text-align: center; text-transform: uppercase; }
+    .doa-form-page footer { position: relative; z-index: 5; border-top: 1px solid var(--blue-line); padding: 16px 48px; display: flex; justify-content: space-between; align-items: center; background: rgba(6,8,15,0.97); }
+    .doa-form-page footer span { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 0.1em; }
+    .doa-form-page .title-kicker { color: var(--blue-2); }
+    .doa-form-page .title-main span { color: var(--blue-2); }
+    .doa-form-page .title-rule .line { background: var(--blue-line); }
+    .doa-form-page .title-rule .diamond { background: var(--blue-2); }
+    .doa-form-page .info-banner { background: rgba(36,113,163,0.06); border-color: var(--blue-line); border-left-color: var(--blue-2); color: rgba(46,134,193,0.7); }
+    .doa-form-page .panel-title { color: var(--blue-2); }
+    .doa-form-page .panel-divider { background: var(--blue-2); }
+    .doa-form-page .section-label { color: var(--blue-2); }
+    .doa-form-page .section-label::after { background: var(--blue-line); }
+    .doa-form-page input, .doa-form-page textarea, .doa-form-page select { border-bottom-color: var(--blue-line) !important; }
+    .doa-form-page input:focus, .doa-form-page textarea:focus, .doa-form-page select:focus { border-bottom-color: var(--blue-2) !important; background: rgba(36,113,163,0.04) !important; }
+    .doa-form-page .btn-primary { background: var(--blue-dim); border-color: var(--blue-line); color: var(--blue-2); }
+    .doa-form-page .btn-primary:hover { background: var(--blue-2); color: var(--black); }
+    .doa-form-page .output-panel { border-top-color: var(--blue-line); }
+    .doa-form-page .output-header { border-bottom-color: var(--blue-line); }
+    .doa-form-page .output-title { color: var(--blue-2); }
+    .doa-form-page .dynamic-item { border-left-color: var(--blue-line); }
+    .doa-form-page .dynamic-item-label { color: var(--blue-2); }
+    .doa-form-page .dynamic-add-btn { color: var(--blue-2); background: var(--blue-dim); border-color: var(--blue-line); }
+    .doa-form-page .dynamic-add-btn:hover { background: var(--blue-2); color: var(--black); }
+    .doa-form-page .action-item { border-left-color: var(--blue-line); }
+
+    /* Bloc organisation (interrogatoire) */
+    .orga-block {
+      background: var(--dark-3);
+      border: 1px solid var(--blue-line);
+      border-left: 3px solid var(--blue-2);
+      padding: 20px 20px 16px;
+      margin-bottom: 12px;
+    }
+    .orga-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .orga-block-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--blue-2); }
+    .orga-qr-list { display: flex; flex-direction: column; gap: 8px; }
+    .orga-qr-item { background: var(--dark-2); border: 1px solid rgba(255,255,255,0.04); padding: 10px 12px; }
+    .orga-qr-item label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: rgba(46,134,193,0.6); display: block; margin-bottom: 4px; }
+
+    /* Statut dossier checkboxes stylées */
+    .statut-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .statut-badge {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+      padding: 6px 14px; border: 1px solid var(--blue-line);
+      color: rgba(46,134,193,0.5); cursor: pointer; background: none;
+      transition: all 0.2s; user-select: none;
+    }
+    .statut-badge.active { background: var(--blue-dim); color: var(--blue-2); border-color: var(--blue-line-strong); }
+
+    /* Niveau de menace (gang inv) */
+    .menace-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .menace-badge {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+      padding: 6px 12px; border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.3); cursor: pointer; background: none; transition: all 0.2s;
+    }
+    .menace-badge[data-level="faible"].active { background: rgba(26,188,156,0.15); color: var(--green); border-color: rgba(26,188,156,0.4); }
+    .menace-badge[data-level="modere"].active { background: rgba(212,160,23,0.15); color: var(--gold); border-color: var(--gold-line); }
+    .menace-badge[data-level="eleve"].active { background: rgba(192,57,43,0.15); color: var(--red); border-color: var(--red-line); }
+    .menace-badge[data-level="critique"].active { background: rgba(192,57,43,0.3); color: #e74c3c; border-color: rgba(231,76,60,0.6); box-shadow: 0 0 8px rgba(231,76,60,0.2); }
+
+    /* Checkbox activités (gang inv) */
+    .activite-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .activite-item {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.1em; color: rgba(255,255,255,0.4);
+      cursor: pointer; padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,0.04);
+      background: var(--dark-3); transition: all 0.2s; user-select: none;
+    }
+    .activite-item.active { color: var(--blue-2); border-color: var(--blue-line); background: var(--blue-dim); }
+    .activite-check { width: 14px; height: 14px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+    .activite-item.active .activite-check { border-color: var(--blue-2); color: var(--blue-2); }
+
+    /* Lien dossier (interrogatoire) */
+    .dossier-link-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .dossier-link-row input { flex: 1; }
+    .dossier-link-row select { width: 130px; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     PAGE ACCUEIL
+════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <div class="bg-layer"></div>
+  <div class="bg-diagonal"></div>
+
+  <header>
+    <div class="header-left">
+      <div class="sys-dot"></div>
+      <div class="sys-info">
+        CONNEXION ÉTABLIE<br>
+        TERMINAL BCSO-01
+      </div>
+    </div>
+    <div class="header-center">◈ BLAINE COUNTY S.O. ◈</div>
+    <div class="header-right">LIFE SANTOS RP<br>ACCÈS RESTREINT</div>
+  </header>
+
+  <section class="hero">
+    <div class="logo-wrap">
+      <div class="logo-glow"></div>
+      <div class="logo-box">
+        <div class="logo-inner">LOGO<br>BCSO<br>ICI</div>
+      </div>
+    </div>
+
+    <div class="hero-eyebrow">◈ Système de rapports ◈</div>
+
+    <h1 class="hero-title">
+      BLAINE<br>
+      <span class="accent">COUNTY</span>
+    </h1>
+
+    <div class="hero-rule">
+      <div class="line"></div>
+      <div class="diamond"></div>
+      <div class="line"></div>
+    </div>
+
+    <p class="hero-sub">Sélectionnez le type de rapport à soumettre</p>
+  </section>
+
+  <div class="cards">
+
+    <div class="card" onclick="navigateTo('form001')">
+      <div class="card-num-bg">01</div>
+      <div class="card-inner">
+        <div class="card-code">◈ FORM-001</div>
+        <div class="card-title">RAPPORT<br>STANDARD</div>
+        <div class="card-divider"></div>
+        <div class="card-desc">Compte-rendu d'intervention, arrestation ou contrôle de routine. Pour les situations courantes sur le terrain.</div>
+        <button class="card-cta">
+          RÉDIGER
+          <div class="cta-arrow"></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="card danger" onclick="navigateTo('form002')">
+      <div class="card-num-bg">02</div>
+      <div class="card-inner">
+        <div class="card-code">◈ FORM-002</div>
+        <div class="card-title">RAPPORT<br>BRAQUAGE</div>
+        <div class="card-divider"></div>
+        <div class="card-desc">Hold-up et braquages en cours ou clôturés. Suspects, otages, déroulement et résolution de l'opération.</div>
+        <button class="card-cta">
+          RÉDIGER
+          <div class="cta-arrow"></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="card" onclick="navigateTo('form003')">
+      <div class="card-num-bg">03</div>
+      <div class="card-inner">
+        <div class="card-code">◈ FORM-003</div>
+        <div class="card-title">RAPPORT<br>INCIDENT</div>
+        <div class="card-divider"></div>
+        <div class="card-desc">Tout incident passé en service : accident, altercation, découverte, ou toute situation hors norme survenue pendant le service.</div>
+        <button class="card-cta">
+          RÉDIGER
+          <div class="cta-arrow"></div>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Accès DOA -->
+  <div class="doa-access-wrap">
+    <div class="doa-section">
+      <div class="doa-access-label">ACCÈS RESTREINT — PERSONNEL AUTORISÉ</div>
+      <button class="doa-access-btn" onclick="navigateTo('doa-home')">
+        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        ◈ PORTAIL DOA — DIVISION DES OPÉRATIONS AVANCÉES
+        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    <span>© BCSO — LIFE SANTOS RP</span>
+    <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
+    <span>v1.0.0</span>
+  </footer>
+
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE FORM-001 — RAPPORT STANDARD
+════════════════════════════════════════ -->
+<div id="page-form001" class="page">
+
+  <div class="bg-layer"></div>
+
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('home')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">◈ BCSO — RAPPORT STANDARD ◈</div>
+    <div class="header-right"><button class="reset-btn" onclick="resetForm001()"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.27"/></svg>RÉINITIALISER</button></div>
+  </header>
+
+  <div class="page-title-bar">
+    <div class="title-kicker">◈ FORMULAIRE D'ARRESTATION</div>
+    <h1 class="title-main">RAPPORT <span>STANDARD</span></h1>
+    <div class="title-rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="info-banner">
+      ⚠ PRISON NON CUMULABLE — Temps max du délit le plus élevé (max 30 min) &nbsp;|&nbsp; Amende max : 200 000 $<br>
+      📊 Récidive : x2 &nbsp;|&nbsp; Complicité : ÷2 &nbsp;|&nbsp; 🚨 DEFCON 3 : x1.5 amendes &nbsp;|&nbsp; DEFCON 2 : x2 amendes
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- PANNEAU GAUCHE : FORMULAIRE -->
+    <div class="panel">
+      <div class="panel-title">INFORMATIONS</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">IDENTITÉ DE LA PERSONNE</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>NOM</label>
+          <input type="text" id="nom" placeholder="NOM" />
+        </div>
+        <div class="form-group">
+          <label>PRÉNOM</label>
+          <input type="text" id="prenom" placeholder="Prénom" />
+        </div>
+      </div>
+
+      <div class="section-label">DROITS MIRANDA</div>
+      <div class="form-group">
+        <label>LECTURE DES DROITS PAR</label>
+        <input type="text" id="miranda" placeholder="Nom de l'officier" />
+      </div>
+      <div class="form-group">
+        <label>DROITS DEMANDÉS</label>
+        <select id="droits">
+          <option value="Aucun">Aucun</option>
+          <option value="Avocat">Avocat</option>
+          <option value="Appel téléphonique">Appel téléphonique</option>
+          <option value="Vivres (Nourriture + Eau)">Vivres (Nourriture + Eau)</option>
+          <option value="Visite d'un médecin">Visite d'un médecin</option>
+          <option value="Avocat + Appel">Avocat + Appel téléphonique</option>
+          <option value="Avocat + Vivres">Avocat + Vivres</option>
+          <option value="Avocat + Médecin">Avocat + Visite d'un médecin</option>
+          <option value="Appel + Vivres">Appel + Vivres</option>
+          <option value="Appel + Médecin">Appel + Visite d'un médecin</option>
+          <option value="Vivres + Médecin">Vivres + Visite d'un médecin</option>
+          <option value="Tous les droits">Tous les droits</option>
+        </select>
+      </div>
+
+      <div class="section-label">FOUILLE COMPLÈTE</div>
+      <div class="form-group">
+        <label>LIEU DE LA FOUILLE</label>
+        <input type="text" id="lieuFouille" placeholder="Ex : Commissariat BCSO" />
+      </div>
+      <div class="form-group">
+        <label>OBJETS TROUVÉS</label>
+        <textarea id="objetsTrouves" placeholder="Liste des objets saisis..."></textarea>
+      </div>
+
+      <div class="section-label">DÉTAILS DE L'INTERPELLATION</div>
+      <div class="form-group">
+        <label>RAPPORT DÉTAILLÉ</label>
+        <textarea id="detailInterpellation" placeholder="Décrivez les circonstances de l'interpellation..." style="min-height:110px;"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>PROCÉDURE FAITE PAR</label>
+          <input type="text" id="officier" placeholder="Officier principal" />
+        </div>
+        <div class="form-group">
+          <label>ACCOMPAGNÉ DE</label>
+          <input type="text" id="accompagne" placeholder="Autres officiers" />
+        </div>
+      </div>
+
+      <div class="section-label">INFORMATIONS COMPLÉMENTAIRES</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>TPH (NUMÉRO DE TÉLÉPHONE)</label>
+          <input type="text" id="tph" placeholder="(480) 066-2906" value="(480) 066-2906" />
+        </div>
+        <div class="form-group">
+          <label>N° DE RAPPORT</label>
+          <input type="text" id="numeroRapport" placeholder="Ex : 1234" />
+        </div>
+      </div>
+
+      <div class="section-label">NIVEAU DEFCON</div>
+      <div class="form-group">
+        <label>MULTIPLICATEUR D'AMENDE</label>
+        <select id="defcon" class="defcon-select" onchange="calculateTotals()">
+          <option value="5">DEFCON 5 — Aucun modificateur</option>
+          <option value="4">DEFCON 4 — Aucun modificateur</option>
+          <option value="3">DEFCON 3 — × 1.5 sur amendes</option>
+          <option value="2">DEFCON 2 — × 2 sur amendes</option>
+        </select>
+      </div>
+
+      <div class="section-label">RÉFÉRENCE — CLASSIFICATION DES DROGUES</div>
+      <div class="drug-ref">
+        <div class="drug-ref-row"><span class="drug-soft">◈ DROGUES DOUCES</span><span class="drug-ref-val">Cannabis, Salvia</span></div>
+        <div class="drug-ref-row"><span class="drug-hard">◈ DROGUES DURES</span><span class="drug-ref-val">Cocaïne, Crack, Ecstasy, Héroïne, Kat, Méthamphétamine, Opium, Fentanyl</span></div>
+        <div class="drug-ref-row"><span class="drug-trafic">◈ TRAFIC</span><span class="drug-ref-val">Plus de 50 pochons = Trafic de Stupéfiants (Art. CP. 201-1)</span></div>
+      </div>
+    </div>
+
+    <!-- PANNEAU DROIT : CODE PÉNAL -->
+    <div class="panel">
+      <div class="panel-title">CODE PÉNAL</div>
+      <div class="panel-divider"></div>
+
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInfractions" placeholder="Rechercher une infraction ou un article..." />
+      </div>
+
+      <div class="selected-zone">
+        <div class="selected-zone-label">◈ CHEFS D'INCULPATION RETENUS</div>
+        <div id="selectedList"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.1em;">AUCUNE INFRACTION SÉLECTIONNÉE</span></div>
+      </div>
+
+      <div class="totals-bar">
+        <div class="total-box">
+          <div class="total-label">AMENDE TOTALE</div>
+          <div class="total-value" id="totalAmende">0 $</div>
+        </div>
+        <div class="total-box">
+          <div class="total-label">PEINE DE PRISON</div>
+          <div class="total-value" id="totalPrison">0 MIN</div>
+        </div>
+      </div>
+
+      <div class="penal-list" id="penalList"></div>
+    </div>
+
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel">
+    <div class="output-header">
+      <div class="output-title">RAPPORT GÉNÉRÉ</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="genererRapport()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        GÉNÉRER LE RAPPORT
+      </button>
+      <button class="btn btn-secondary" onclick="copierRapport()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        COPIER LE RAPPORT
+      </button>
+    </div>
+    <div class="output-box" id="output"><span class="output-empty">◈ Le rapport apparaîtra ici après génération...</span></div>
+  </div>
+
+  <footer>
+    <span>© BCSO — LIFE SANTOS RP</span>
+    <span>FORM-001 — RAPPORT STANDARD</span>
+    <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
+  </footer>
+
+</div>
+
+<!-- Toast -->
+<div class="copy-toast" id="copyToast">✓ RAPPORT COPIÉ</div>
+
+<script>
+  /* ── NAVIGATION SPA ── */
+  function navigateTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+    if (page === 'form001') {
+      renderInfractions();
+      updateSelectedList();
+      calculateTotals();
+    }
+  }
+
+  /* ── DONNÉES CODE PÉNAL ── */
+  const infractions = [
+    { categorie: "Infraction", article: "Article CE. 103-1", nom: "Activité Illégale", amende: 195, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CE. 106", nom: "Abandon d'Activité d'Entreprise", amende: 487.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CT. 3.3", nom: "Non-Conservation de Contrat de Travail", amende: 97.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 424", nom: "Rassemblement Illégal", amende: 67.60, prison: 8, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 26", nom: "Conduite Dangereuse", amende: 97.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 26-1", nom: "Présence piétonne sur autoroute", amende: 130, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 28", nom: "Absence de Plaque d'Immatriculation", amende: 78, prison: 2, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 30", nom: "Excès de Vitesse - de 1 à 20 km/h", amende: 52, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 30", nom: "Excès de Vitesse - de 21 à 40 km/h", amende: 84.50, prison: 5, note: "Rétention permis et véhicule min 1j", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 30", nom: "Excès de Vitesse - > 40km/h", amende: 117, prison: 3, note: "Rétention permis et véhicule min 2j", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 32", nom: "Non-Respect de Signalisation", amende: 48.10, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 33", nom: "Nuisance Sonore Véhiculée", amende: 65, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 34", nom: "Non-Conformité de Véhicule", amende: 39, prison: 8, note: "Par non-conformité (max 5)", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 35", nom: "Conduite à Contresens", amende: 97.50, prison: 2, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 36", nom: "Stationnement Gênant", amende: 52, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 36-1", nom: "Stationnement Zone Fédéral", amende: 130, prison: 3, note: "Mise en fourrière", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 37", nom: "Non Respect de Véhicule Prioritaire", amende: 58.50, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 38", nom: "Absence de Port du Casque", amende: 26, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 39", nom: "Absence de Feux", amende: 45.50, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 42", nom: "Plaque d'Immatriculation Non Conforme", amende: 52, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 43", nom: "Modification Esthétique Illégale de Véhicule", amende: 130, prison: 8, note: "Saisie véhicule si récidive", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 46", nom: "Conduite de Navire Sans Permis", amende: 65, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 47", nom: "Non Respect des Distances de Sécurité en Bateau", amende: 19.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 48", nom: "Excès de Vitesse en eaux territoriales", amende: 39, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 49", nom: "Non Respect de Véhicule Prioritaire Maritime", amende: 58.50, prison: 10, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 51", nom: "Conduite Maritime Sous Emprise d'Alcool", amende: 65, prison: 10, note: "Retrait permis bateau 1j", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 52", nom: "Conduite d'Aéronef Sans Permis", amende: 260, prison: 8, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 55", nom: "Non Respect de l'Altitude de Voyage", amende: 390, prison: 8, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CR. 62", nom: "Non Respect de Véhicule Prioritaire Aérien", amende: 65, prison: 10, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CA. 13", nom: "Port d'Arme de Catégorie D1", amende: 1300, prison: 8, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 203", nom: "Possession de Drogues Douces - 5 à 15 Unités", amende: 130, prison: 5, note: "Amende + 10$/pochon", perUnit: true, unitPrice: 10 },
+    { categorie: "Infraction", article: "Article CP. 207", nom: "Consommation de Drogues Douces", amende: 45.50, prison: 10, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 211", nom: "Violences Volontaires", amende: 260, prison: 10, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 232", nom: "Prostitution", amende: 162.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 307", nom: "Intrusion sur Propriété Privée", amende: 195, prison: 2, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 415", nom: "Dissimulation de Visage sur Voie Publique", amende: 195, prison: 3, note: "Palpation + fouille véhicule", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 417", nom: "État d'Ébriété sur Voie Publique", amende: 32.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 425", nom: "Trouble à l'Ordre Public", amende: 65, prison: 3, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 425-3", nom: "Nuisance Sonore", amende: 292.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Article CP. 501", nom: "Possession de Liquidités", amende: 65, prison: 5, note: "", perUnit: false },
+    { categorie: "Infraction", article: "Décret-18-09/A", nom: "Non Respect du Couvre Feu (1ère Infraction)", amende: 195, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CE. 116", nom: "Tarifs Non-Réglementés", amende: 130, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CE. 119", nom: "Non-Respect du Taux et des Horaires", amende: 162.50, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CR. 27", nom: "Délit de Fuite", amende: 195, prison: 8, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CR. 29", nom: "Conduite Sous Emprise", amende: 97.50, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CR. 50", nom: "Conduite Maritime Sous Emprise de Stupéfiants", amende: 97.50, prison: 13, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CR. 64", nom: "Conduite d'Aéronef sous Emprise de Stupéfiants", amende: 780, prison: 13, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CR. 65", nom: "Conduite Aérienne Sous Emprise d'Alcool", amende: 650, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CR. 66", nom: "Survol de Zones Interdites", amende: 455, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 7-1", nom: "Utilisation illégale d'une arme", amende: 104, prison: 13, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 13-1", nom: "Port d'Armes de Catégorie A2", amende: 390, prison: 13, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 13-2", nom: "Port d'Armes de Catégorie B2", amende: 9750, prison: 16, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 13-3", nom: "Port d'Armes de Catégorie B1", amende: 19500, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 13-5", nom: "Port d'Armes de Catégorie C", amende: 6500, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 21", nom: "Cession d'Arme Illégale", amende: 1300, prison: 8, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 27", nom: "Possession d'Équipement Tactique", amende: 1300, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 28", nom: "Possession de Chargeurs - Pistolet", amende: 260, prison: 13, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 28", nom: "Possession de Chargeurs - Autres", amende: 650, prison: 16, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 29", nom: "Possession/Port du Holster", amende: 975, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 203-1", nom: "Possession de Drogues Douces - 16 à 50 Unités", amende: 130, prison: 5, note: "Amende + 10$/pochon", perUnit: true, unitPrice: 10 },
+    { categorie: "Délit Mineur", article: "Article CP. 204", nom: "Possession de Drogues Dures - 1 à 50 Unités", amende: 162.50, prison: 10, note: "Amende + 35$/pochon", perUnit: true, unitPrice: 35 },
+    { categorie: "Délit Mineur", article: "Article CP. 208", nom: "Consommation de Drogues Dures", amende: 104, prison: 8, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 209", nom: "Violation du droit à l'image", amende: 130, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 210", nom: "Cyberharcèlement", amende: 2600, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 210-1", nom: "Contenu offensant, violent ou raciste", amende: 1950, prison: 8, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 210-2", nom: "Publicité pour des services illicites", amende: 487.50, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 212", nom: "Violence avec Arme Contondante", amende: 4225, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 212-1", nom: "Violence avec Arme Tranchante", amende: 4550, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 216-2", nom: "Agression sur Agent de Police", amende: 1300, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 217", nom: "Non Déclaration d'un Homicide", amende: 1950, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 225", nom: "Mise en Danger de la Vie d'Autrui", amende: 195, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 226", nom: "Non Assistance à Personne en Danger", amende: 650, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 227", nom: "Diffamation", amende: 292.50, prison: 8, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 227-1", nom: "Dénonciation Mensongère", amende: 390, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 227-2", nom: "Alerte Mensongère", amende: 975, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 228", nom: "Chantage", amende: 650, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 229", nom: "Usurpation d'Identité", amende: 975, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 231", nom: "Harcèlement", amende: 2600, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 231-1", nom: "Discrimination", amende: 650, prison: 8, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 302", nom: "Vol", amende: 260, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 302", nom: "Vol de voiture", amende: 650, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 302-1", nom: "Braquage d'ATM", amende: 234, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 302-2", nom: "Braquage de Petit Commerce", amende: 208, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 305", nom: "Recel", amende: 260, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 306", nom: "Vandalisme", amende: 260, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 308", nom: "Abus de Confiance", amende: 390, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 402", nom: "Obstruction à la Justice", amende: 975, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 402-1", nom: "Refus d'Obtempérer", amende: 227.50, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 402-2", nom: "Non-Présentation à Convocation", amende: 325, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 402-8", nom: "Entrave à une Opération (SWAT/SEB/CAT/DRT)", amende: 585, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 402-9", nom: "Entrave aux services publics", amende: 650, prison: 5, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 404", nom: "Outrage à Magistrat", amende: 162.50, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 405", nom: "Menaces", amende: 162.50, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 406", nom: "Appels 911 Abusifs", amende: 1300, prison: 20, note: "200$ + 50$/appel", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 407", nom: "Violation de Bâtiment Gouvernemental", amende: 3250, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 414.2", nom: "Espionnage", amende: 1625, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 416", nom: "Exhibition", amende: 520, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CP. 422", nom: "Usurpation de fonction", amende: 455, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CEV. 3.3.3", nom: "Maltraitance animale", amende: 455, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CT. 3.1.3", nom: "Défaut de Contrat de Travail", amende: 455, prison: 26, note: "+150$ par contrat manquant", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CT. 5.4.2", nom: "Défaut de Visite Médicale", amende: 162.50, prison: 20, note: "+75$ par visite manquante", perUnit: false },
+    { categorie: "Délit Mineur", article: "Article CA. 10/CP. 201/CP. 312-2", nom: "Transport de Marchandises Illégal", amende: 1560, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Mineur", article: "Décret-18-09/B", nom: "Non Respect du Couvre Feu (2ème Infraction)", amende: 650, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CA 20-1", nom: "Achat d'armes illégal", amende: 325, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CA. 22-3", nom: "Entreposage d'Armes Illégal", amende: 1950, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 201-1", nom: "Trafic de Stupéfiants", amende: 1950, prison: 30, note: "Amende + 35$/pochon", perUnit: true, unitPrice: 35 },
+    { categorie: "Délit Majeur", article: "Article CP. 201-2", nom: "Culture de Plantes Stupéfiantes", amende: 650, prison: 30, note: "Amende + 20$/plant", perUnit: true, unitPrice: 20 },
+    { categorie: "Délit Majeur", article: "Article CP. 201-3", nom: "Fabrication de Drogues Dures", amende: 9750, prison: 30, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 205", nom: "Vente de Drogues Douces", amende: 1950, prison: 30, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 206", nom: "Vente de Drogues Dures", amende: 6500, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 210", nom: "Exercice illégal de la médecine", amende: 4550, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 211-1", nom: "Organisation de combat illégal", amende: 325, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 213", nom: "Violence avec Arme à Feux", amende: 3250, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 214-1", nom: "Tentative d'Homicide", amende: 26000, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 216", nom: "Coups et Blessures Aggravés", amende: 58500, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 216-1", nom: "Agression sur Agent Fédéral", amende: 4550, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 219", nom: "Séquestration", amende: 1300, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 219-1", nom: "Prise d'Otage", amende: 1300, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 219-3", nom: "Kidnapping", amende: 1950, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 230", nom: "Parjure", amende: 19500, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 302-3", nom: "Braquage d'Agence Bancaire", amende: 3250, prison: 10, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 302-4", nom: "Braquage de Yacht", amende: 3250, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 302-5", nom: "Braquage de Bijouterie", amende: 3900, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 302-6", nom: "Braquage de Musée", amende: 3900, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 302-8", nom: "Braquage d'Ammunation", amende: 10400, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 302-10", nom: "Braquage de convoi", amende: 2600, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 309", nom: "Escroquerie", amende: 1950, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 313", nom: "Incendie Volontaire", amende: 32500, prison: 26, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 401", nom: "Violation du Secret de l'Enquête", amende: 65000, prison: 15, note: "Licenciement", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 402-6", nom: "Refus Citation à Comparaître", amende: 9750, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 402-7", nom: "Non paiement d'amende", amende: 0, prison: 26, note: "TIG / Conversion carcérale", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 412", nom: "Corruption", amende: 6500, prison: 30, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 414", nom: "Abus de Pouvoir", amende: 26000, prison: 26, note: "Licenciement", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 420", nom: "Corruption Électorale", amende: 65000, prison: 20, note: "Impossibilité de se représenter", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 421", nom: "Violences et Menaces Électorales", amende: 97500, prison: 30, note: "Impossibilité de se représenter", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 423", nom: "Faux et Usage de Faux", amende: 13000, prison: 30, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 425-1", nom: "Incitation à la haine", amende: 975, prison: 30, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Article CP. 426", nom: "Association de Malfaiteurs", amende: 16250, prison: 20, note: "", perUnit: false },
+    { categorie: "Délit Majeur", article: "Décret-18-09/C", nom: "Non Respect du Couvre Feu (3ème Infraction)", amende: 1300, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CA. 13-4", nom: "Port d'Armes de Catégorie A1", amende: 200000, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CA. 22-1", nom: "Fabrication d'Armes", amende: 32500, prison: 26, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CA. 30", nom: "Violation du règlement fédéral/militaire sur l'usage d'arme", amende: 32500, prison: 0, note: "FEDERALE", perUnit: false },
+    { categorie: "Crime", article: "Article CA. 22-2", nom: "Trafic d'Armes", amende: 110500, prison: 0, note: "FEDERALE", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 216", nom: "Homicide Involontaire", amende: 65000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 215-1", nom: "Homicide Volontaire", amende: 200000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 215-2", nom: "Meurtre Commandité", amende: 200000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 221", nom: "Torture et Acte de Barbarie", amende: 200000, prison: 26, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 223", nom: "Refus d'obéissance aux ordres hiérarchiques", amende: 200000, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 223-1", nom: "Actes discriminatoires sur orientation/identité", amende: 200000, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 224", nom: "Insubordination aggravée", amende: 200000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 233", nom: "Proxénétisme", amende: 200000, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 302-7", nom: "Braquage de Laboratoire Gouvernemental", amende: 200000, prison: 0, note: "FEDERALE", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 302-9", nom: "Braquage de Pacific Bank", amende: 200000, prison: 0, note: "FEDERALE", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 307-1", nom: "Violation du Sol Militaire", amende: 32500, prison: 0, note: "FEDERALE", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 307-2", nom: "Survol d'un Sol Militaire", amende: 32500, prison: 0, note: "FEDERALE", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 402-3", nom: "Évasion", amende: 26000, prison: 0, note: "FEDERALE + Most Wanted", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 402-5", nom: "Destruction ou dissimulation de preuve", amende: 2600, prison: 26, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 402-4", nom: "Non-Respect des Obligations de Jugement", amende: 22750, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 402-4", nom: "Non-Respect d'une Ordonnance de la Cour Supérieure", amende: 32500, prison: 0, note: "FEDERALE", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 405-1", nom: "Mise à prix de la vie d'autrui", amende: 200000, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 406-1", nom: "Présence illégale sur le territoire", amende: 200000, prison: 26, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 409", nom: "Terrorisme", amende: 200000, prison: 10, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 409-1", nom: "Cyberterrorisme", amende: 200000, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 410", nom: "Apologie du Terrorisme", amende: 65000, prison: 20, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 411", nom: "Atteinte à la sécurité intérieure", amende: 200000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 414-1", nom: "Haute Trahison", amende: 200000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article CP. 418", nom: "Blanchiment", amende: 97500, prison: 26, note: "Retrait de la société", perUnit: false },
+    { categorie: "Crime", article: "Article CE. 129", nom: "Exploitation de Mineur", amende: 200000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article LF. 6-3", nom: "Atteinte à la sécurité d'une institution fédérale/militaire", amende: 200000, prison: 30, note: "", perUnit: false },
+    { categorie: "Crime", article: "Article LF. 6-4", nom: "Négligence dans l'exercice de fonctions publiques", amende: 26000, prison: 20, note: "", perUnit: false },
+    { categorie: "Financier", article: "Article CE. 5-6-1", nom: "Abus de Bien Social", amende: 6500, prison: 20, note: "", perUnit: false },
+    { categorie: "Financier", article: "Article CE. 5-6-2", nom: "Escroquerie en Bande Organisée", amende: 9750, prison: 20, note: "", perUnit: false },
+    { categorie: "Financier", article: "Article CE. 5-6-3", nom: "Détournement de fonds", amende: 13000, prison: 26, note: "Remboursement", perUnit: false },
+    { categorie: "Financier", article: "Article LF. 8-1", nom: "Retard / Non Paiement de Salaire", amende: 975, prison: 10, note: "Paiement des salaires", perUnit: false },
+    { categorie: "Financier", article: "Article LF. 8-2", nom: "Retard / Absence de déclaration d'impôts", amende: 1625, prison: 20, note: "", perUnit: false },
+    { categorie: "Financier", article: "Article LF. 8-3", nom: "Détournement de fonds publics", amende: 3250, prison: 26, note: "Remboursement", perUnit: false },
+    { categorie: "Financier", article: "Article LF. 8-4", nom: "Fraude Fiscale", amende: 2275, prison: 20, note: "Remboursement", perUnit: false },
+    { categorie: "Financier", article: "Article LF. 8-5", nom: "Faillite Frauduleuse", amende: 1950, prison: 20, note: "", perUnit: false }
+  ];
+
+  const CATEGORY_COLORS = {
+    "Infraction": "#4a90d9",
+    "Délit Mineur": "#f0bc30",
+    "Délit Majeur": "#e67e22",
+    "Crime": "#e74c3c",
+    "Financier": "#9b59b6"
+  };
+
+  let selectedInfractions = [];
+  let nextId = 1;
+
+  function renderInfractions() {
+    const penalList = document.getElementById('penalList');
+    const searchInput = document.getElementById('searchInfractions');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    penalList.innerHTML = '';
+    let currentCat = '';
+
+    infractions.forEach((inf, idx) => {
+      if (searchTerm &&
+        !inf.nom.toLowerCase().includes(searchTerm) &&
+        !inf.categorie.toLowerCase().includes(searchTerm) &&
+        !inf.article.toLowerCase().includes(searchTerm)) return;
+
+      if (inf.categorie !== currentCat) {
+        currentCat = inf.categorie;
+        const hdr = document.createElement('div');
+        hdr.className = 'category-header';
+        hdr.style.color = CATEGORY_COLORS[currentCat] || 'var(--gold)';
+        hdr.textContent = '◈ ' + currentCat.toUpperCase();
+        penalList.appendChild(hdr);
+      }
+
+      const item = document.createElement('div');
+      item.className = 'infraction-item' + (isSelected(idx) ? ' selected' : '');
+      const catColor = CATEGORY_COLORS[inf.categorie] || 'var(--gold)';
+      if (!isSelected(idx)) item.style.borderLeftColor = catColor + '55';
+      item.onclick = () => toggleInfraction(idx);
+
+      item.innerHTML = `
+        <div class="inf-article">${inf.article}</div>
+        <div class="inf-name">
+          ${inf.nom}
+          ${inf.perUnit ? '<span class="qty-badge">QUANTITÉ</span>' : ''}
+          ${inf.note && inf.note.includes('FEDERALE') ? '<span class="qty-badge" style="background:var(--red)">FÉDÉRALE</span>' : ''}
+        </div>
+        <div class="inf-details">
+          💵 ${inf.amende.toLocaleString('fr-FR')} $ &nbsp;|&nbsp; ⏱ ${inf.prison} min
+          ${inf.note && !inf.note.includes('FEDERALE') ? ' &nbsp;|&nbsp; ' + inf.note : ''}
+        </div>`;
+      penalList.appendChild(item);
+    });
+  }
+
+  function toggleInfraction(idx) {
+    const existing = selectedInfractions.findIndex(s => s.index === idx);
+    if (existing > -1) selectedInfractions.splice(existing, 1);
+    else selectedInfractions.push({ id: nextId++, index: idx, quantity: 1 });
+    updateSelectedList();
+    calculateTotals();
+    renderInfractions();
+  }
+
+  function isSelected(idx) { return selectedInfractions.some(s => s.index === idx); }
+
+  function updateSelectedList() {
+    const list = document.getElementById('selectedList');
+    list.innerHTML = '';
+    if (!selectedInfractions.length) {
+      list.innerHTML = '<span style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.1em;">AUCUNE INFRACTION SÉLECTIONNÉE</span>';
+      return;
+    }
+    selectedInfractions.forEach(sel => {
+      const inf = infractions[sel.index];
+      const card = document.createElement('div');
+      card.className = 'selected-card';
+      card.innerHTML = `
+        <div class="selected-card-header">
+          <div class="selected-card-name">${inf.nom}</div>
+          <button class="remove-btn" onclick="toggleInfraction(${sel.index})">✕ RETIRER</button>
+        </div>
+        ${inf.perUnit ? `
+          <div class="qty-row">
+            <label>QUANTITÉ (pochons/plants)</label>
+            <input type="number" min="1" value="${sel.quantity}" class="qty-input"
+              onchange="updateQuantity(${sel.id}, this.value)" />
+            <div class="qty-note">Base : ${inf.amende} $ + ${inf.unitPrice} $/unité</div>
+          </div>` : ''}`;
+      list.appendChild(card);
+    });
+  }
+
+  function updateQuantity(id, val) {
+    const sel = selectedInfractions.find(s => s.id === id);
+    if (sel) { sel.quantity = Math.max(1, parseInt(val) || 1); calculateTotals(); }
+  }
+
+  function calculateTotals() {
+    const defconEl = document.getElementById('defcon');
+    const defcon = defconEl ? parseInt(defconEl.value) : 5;
+    let totalAmende = 0, maxPrison = 0;
+    selectedInfractions.forEach(sel => {
+      const inf = infractions[sel.index];
+      let amende = inf.amende;
+      if (inf.perUnit && sel.quantity > 1) amende += inf.unitPrice * sel.quantity;
+      totalAmende += amende;
+      maxPrison = Math.max(maxPrison, inf.prison);
+    });
+    if (defcon === 3) totalAmende *= 1.5;
+    else if (defcon === 2) totalAmende *= 2;
+    maxPrison = Math.min(maxPrison, 30);
+    totalAmende = Math.min(totalAmende, 200000);
+    document.getElementById('totalAmende').textContent = Math.round(totalAmende).toLocaleString('fr-FR') + ' $';
+    document.getElementById('totalPrison').textContent = Math.round(maxPrison) + ' MIN';
+  }
+
+  function genererRapport() {
+    const nom = document.getElementById('nom').value || '//';
+    const prenom = document.getElementById('prenom').value || '//';
+    const miranda = document.getElementById('miranda').value || '//';
+    const droits = document.getElementById('droits').value;
+    const lieuFouille = document.getElementById('lieuFouille').value || '//';
+    const objetsTrouves = document.getElementById('objetsTrouves').value || '//';
+    const detailInterpellation = document.getElementById('detailInterpellation').value || '[ Rapport rapide ]';
+    const officier = document.getElementById('officier').value || '//';
+    const accompagne = document.getElementById('accompagne').value || '//';
+    const numeroRapport = document.getElementById('numeroRapport').value || '1234';
+    const tph = document.getElementById('tph').value || '(480) 066-2906';
+    const totalAmende = document.getElementById('totalAmende').textContent;
+    const totalPrison = document.getElementById('totalPrison').textContent;
+
+    let chefs = '';
+    selectedInfractions.forEach(sel => {
+      const inf = infractions[sel.index];
+      let ligne = `- ${inf.article} - ${inf.nom}`;
+      if (inf.perUnit && sel.quantity > 1) ligne += ` (${sel.quantity} unités)`;
+      chefs += ligne + '\n';
+    });
+    if (!chefs) chefs = '//';
+
+    const today = new Date();
+    const dateStr = `${today.getDate().toString().padStart(2,'0')}/${(today.getMonth()+1).toString().padStart(2,'0')}/${today.getFullYear()}`;
+
+    const rapport = `----------
+🏃 Identité de la personne :
+Nom : ${nom}
+Prénom : ${prenom}
+📖 Lecture des droits Miranda par : ${miranda}
+Droits demandés : ${droits}
+🧾 Procédure Post-Interpellation
+🔍 Fouille Complète
+Lieu de la fouille : ${lieuFouille}
+Objets trouvés : ${objetsTrouves}
+💵 Chef d'inculpation :
+${chefs}
+Total d'amende : ${totalAmende}
+Total de prison : ${totalPrison}
+TPH : ${tph}
+🚔 Détail de l'interpellation : ${detailInterpellation}
+👮 Procédure faite par : ${officier}
+👮 Accompagné de : ${accompagne}
+✍️ Signature Officielle
+– ${officier}
+Date : ${dateStr}
+👮 B.C.S.O — Rapport d'Intervention N° ${numeroRapport}
+Document officiel rédigé conformément aux procédures par le Blaine County Sheriff Office.
+----------`;
+
+    document.getElementById('output').textContent = rapport;
+  }
+
+  function copierRapport() {
+    const output = document.getElementById('output').textContent;
+    if (!output || output.includes('apparaîtra')) { alert('⚠ Veuillez d\'abord générer un rapport !'); return; }
+    navigator.clipboard.writeText(output).then(() => {
+      const toast = document.getElementById('copyToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  }
+
+
+  function resetForm001() {
+    // Reset tous les inputs/textarea/select de la page
+    document.querySelectorAll('#page-form001 input[type="text"], #page-form001 input[type="number"], #page-form001 textarea').forEach(function(el) {
+      el.value = '';
+    });
+    document.getElementById('tph').value = '(480) 066-2906';
+    document.getElementById('droits').value = 'Aucun';
+    document.getElementById('defcon').value = '5';
+    // Reset code pénal
+    selectedInfractions = [];
+    nextId = 1;
+    updateSelectedList();
+    calculateTotals();
+    renderInfractions();
+    // Reset rapport généré
+    document.getElementById('output').innerHTML = '<span class="output-empty">◈ Le rapport apparaîtra ici après génération...</span>';
+  }
+  document.getElementById('searchInfractions').addEventListener('input', renderInfractions);
+</script>
+
+<!-- ════════════════════════════════════════
+     PAGE FORM-002 — RAPPORT BRAQUAGE
+════════════════════════════════════════ -->
+<div id="page-form002" class="page">
+
+  <div class="bg-layer"></div>
+
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('home')" style="border-color:var(--red-line);color:var(--red);">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">🚨 BCSO — RAPPORT BRAQUAGE 🚨</div>
+    <div class="header-right"><button class="reset-btn" onclick="resetForm002()" style="border-color:rgba(192,57,43,0.25);color:var(--grey-light);">  <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.27"/></svg>RÉINITIALISER</button></div>
+  </header>
+
+  <div class="page-title-bar">
+    <div class="title-kicker">◈ FORMULAIRE D'INTERVENTION — HOLD-UP</div>
+    <h1 class="title-main">RAPPORT <span>BRAQUAGE</span></h1>
+    <div class="title-rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="info-banner">
+      🚨 PROTOCOLE ALPHA — Document confidentiel à transmettre immédiatement après clôture de l'intervention &nbsp;|&nbsp; Unité : Blaine County Sheriff's Office
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- PANNEAU GAUCHE -->
+    <div class="panel">
+      <div class="panel-title">SITUATION</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">REVENDICATIONS & CONTEXTE</div>
+      <div class="form-group">
+        <label>📌 REVENDICATIONS DES SUSPECTS</label>
+        <textarea id="b_revendications" placeholder="Ex : libération d'un détenu, fuite assurée, argent..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>🗓️ DATE & HEURE</label>
+          <input type="text" id="b_datetime" placeholder="JJ/MM/AAAA — HH:MM" />
+        </div>
+        <div class="form-group">
+          <label>👥 NOMBRE D'OTAGES</label>
+          <input type="text" id="b_nbOtages" placeholder="Ex : 3" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>🪪 IDENTITÉ(S) DES OTAGES</label>
+        <textarea id="b_otages" placeholder="Noms / descriptions des otages..." style="min-height:70px;"></textarea>
+      </div>
+
+      <div class="section-label">VÉHICULE SUSPECT</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>🚗 TYPE / MODÈLE</label>
+          <input type="text" id="b_vehicule" placeholder="Ex : Sultan RS, noir" />
+        </div>
+        <div class="form-group">
+          <label>🔢 PLAQUE D'IMMATRICULATION</label>
+          <input type="text" id="b_plaque" placeholder="Ex : 4BC-123" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>📷 PHOTO / DESCRIPTION COMPLÉMENTAIRE</label>
+        <textarea id="b_photoDesc" placeholder="Description visuelle ou lien photo joint..." style="min-height:60px;"></textarea>
+      </div>
+
+      <div class="section-label">UNITÉS ENGAGÉES</div>
+      <div class="form-group">
+        <label>🗣️ LEAD NÉGOCIATION</label>
+        <input type="text" id="b_leadNego" placeholder="Nom de l'officier négociateur" />
+      </div>
+      <div class="form-group">
+        <label>🎯 LEAD TERRAIN</label>
+        <input type="text" id="b_leadTerrain" placeholder="Nom de l'officier terrain" />
+      </div>
+      <div class="form-group">
+        <label>🚓 UNITÉS PRÉSENTES</label>
+        <textarea id="b_unites" placeholder="Liste des unités / officiers déployés..." style="min-height:70px;"></textarea>
+      </div>
+    </div>
+
+    <!-- PANNEAU DROIT -->
+    <div class="panel">
+      <div class="panel-title">DÉROULEMENT</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">NÉGOCIATION</div>
+      <div class="form-group">
+        <label>💬 DÉTAILS DES NÉGOCIATIONS</label>
+        <textarea id="b_nego" placeholder="Résumé des échanges, demandes traitées, points bloquants..." style="min-height:110px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>🔁 ÉCHANGE(S) CONTRE OTAGE</label>
+        <textarea id="b_echanges" placeholder="Ex : véhicule fourni, otage libéré suite à..." style="min-height:80px;"></textarea>
+      </div>
+
+      <div class="section-label">ISSUE DE L'INTERVENTION</div>
+      <div class="form-group">
+        <label>⛓️ RÉSULTAT FINAL</label>
+        <div class="issue-grid">
+          <label class="issue-badge" id="ib_interpelle" onclick="toggleIssueBadge('ib_interpelle')">
+            <span class="badge-dot"></span>INTERPELLÉ(S)
+          </label>
+          <label class="issue-badge" id="ib_fuite" onclick="toggleIssueBadge('ib_fuite')">
+            <span class="badge-dot"></span>FUITE
+          </label>
+          <label class="issue-badge" id="ib_neutralise" onclick="toggleIssueBadge('ib_neutralise')">
+            <span class="badge-dot"></span>NEUTRALISÉ(S)
+          </label>
+          <label class="issue-badge" id="ib_blesse" onclick="toggleIssueBadge('ib_blesse')">
+            <span class="badge-dot"></span>BLESSÉ(S)
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>📋 DÉTAILS DE L'INTERPELLATION / ISSUE</label>
+        <textarea id="b_issue" placeholder="Décrivez les circonstances de la résolution..." style="min-height:100px;"></textarea>
+      </div>
+
+      <div class="section-label">SIGNATURE & OBSERVATIONS</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>✍️ MATRICULE</label>
+          <input type="text" id="b_matricule" placeholder="Ex : BCSO-042" />
+        </div>
+        <div class="form-group">
+          <label>🎖️ GRADE</label>
+          <input type="text" id="b_grade" placeholder="Ex : Deputy, Sheriff..." />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>📎 OBSERVATIONS COMPLÉMENTAIRES</label>
+        <textarea id="b_observations" placeholder="Toute information utile non couverte ci-dessus..." style="min-height:80px;"></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel">
+    <div class="output-header">
+      <div class="output-title">RAPPORT GÉNÉRÉ</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="genererRapportBraquage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        GÉNÉRER LE RAPPORT
+      </button>
+      <button class="btn btn-secondary" onclick="copierRapportBraquage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        COPIER LE RAPPORT
+      </button>
+    </div>
+    <div class="output-box" id="output-braquage"><span class="output-empty">◈ Le rapport apparaîtra ici après génération...</span></div>
+  </div>
+
+  <footer>
+    <span>© BCSO — LIFE SANTOS RP</span>
+    <span>FORM-002 — RAPPORT BRAQUAGE</span>
+    <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
+  </footer>
+
+</div>
+
+<script>
+  /* ── FORM-002 LOGIQUE ── */
+  const issueBadgeState = { ib_interpelle: false, ib_fuite: false, ib_neutralise: false, ib_blesse: false };
+
+  function toggleIssueBadge(id) {
+    issueBadgeState[id] = !issueBadgeState[id];
+    document.getElementById(id).classList.toggle('checked', issueBadgeState[id]);
+  }
+
+  function getIssueLabels() {
+    const labels = {
+      ib_interpelle: 'Interpellé(s)',
+      ib_fuite: 'Fuite',
+      ib_neutralise: 'Neutralisé(s)',
+      ib_blesse: 'Blessé(s)'
+    };
+    return Object.entries(issueBadgeState)
+      .filter(([,v]) => v)
+      .map(([k]) => labels[k])
+      .join(' / ') || '//';
+  }
+
+  function genererRapportBraquage() {
+    const get = id => document.getElementById(id).value.trim() || '//';
+    const today = new Date();
+    const dateStr = `${today.getDate().toString().padStart(2,'0')}/${(today.getMonth()+1).toString().padStart(2,'0')}/${today.getFullYear()}`;
+
+    const rapport = `╔════════════════════════════════════════╗
+🚨 BCSO • RAPPORT D'INTERVENTION BRAQUAGE 🚨
+╚════════════════════════════════════════╝
+
+👮 Unité : Blaine County Sheriff's Office
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 Revendications des suspects :
+➤ ${get('b_revendications')}
+
+🗓️ Date & Heure :
+➤ ${get('b_datetime')}
+
+👥 Nombre d'otages :
+➤ ${get('b_nbOtages')}
+
+🪪 Identité(s) des otages :
+➤ ${get('b_otages')}
+
+🚗 Véhicule suspect :
+➤ ${get('b_vehicule')}
+➤ Plaque : ${get('b_plaque')}
+➤ Photo / Description : ${get('b_photoDesc')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🗣️ Lead Négociation :
+➤ ${get('b_leadNego')}
+
+🎯 Lead Terrain :
+➤ ${get('b_leadTerrain')}
+
+🚓 Unités présentes :
+➤ ${get('b_unites')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💬 Détails des négociations :
+➤ ${get('b_nego')}
+
+🔁 Échange(s) contre otage :
+➤ ${get('b_echanges')}
+
+⛓️ Interpellation / Issue :
+➤ ${getIssueLabels()}
+➤ ${get('b_issue')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✍️ Signature :
+➤ ${get('b_matricule')} | ${get('b_grade')}
+
+📎 Observations complémentaires :
+➤ ${get('b_observations')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🕘 Fin de rapport — ${dateStr}
+👮 B.C.S.O — FORM-002 — Document officiel rédigé conformément aux procédures par le Blaine County Sheriff Office.`;
+
+    document.getElementById('output-braquage').textContent = rapport;
+  }
+
+
+  function resetForm002() {
+    // Reset tous les inputs/textarea de la page
+    document.querySelectorAll('#page-form002 input[type="text"], #page-form002 textarea').forEach(function(el) {
+      el.value = '';
+    });
+    // Reset badges issue
+    Object.keys(issueBadgeState).forEach(function(k) {
+      issueBadgeState[k] = false;
+      var el = document.getElementById(k);
+      if (el) el.classList.remove('checked');
+    });
+    // Reset rapport généré
+    document.getElementById('output-braquage').innerHTML = '<span class="output-empty">◈ Le rapport apparaîtra ici après génération...</span>';
+  }
+
+  function copierRapportBraquage() {
+    const output = document.getElementById('output-braquage').textContent;
+    if (!output || output.includes('apparaîtra')) { alert('⚠ Veuillez d\'abord générer un rapport !'); return; }
+    navigator.clipboard.writeText(output).then(() => {
+      const toast = document.getElementById('copyToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  }
+</script>
+
+<!-- ════════════════════════════════════════
+     PAGE FORM-003 — RAPPORT D'INCIDENT
+════════════════════════════════════════ -->
+<div id="page-form003" class="page">
+
+  <div class="bg-layer"></div>
+
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('home')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">&#9672; BCSO — RAPPORT D'INCIDENT &#9672;</div>
+    <div class="header-right"><button class="reset-btn" onclick="f3Reset()"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.27"/></svg>RÉINITIALISER</button></div>
+  </header>
+
+  <div class="page-title-bar">
+    <div class="title-kicker">&#9672; FORMULAIRE D'INCIDENT — RAPPORT DE SERVICE</div>
+    <h1 class="title-main">RAPPORT <span>INCIDENT</span></h1>
+    <div class="title-rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="info-banner">
+      Document a remplir pour tout incident passe en service &nbsp;|&nbsp; Unite : Blaine County Sheriff's Office &nbsp;|&nbsp; CONFIDENTIEL — USAGE INTERNE
+    </div>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- PANNEAU GAUCHE -->
+    <div class="panel">
+      <div class="panel-title">INFORMATIONS</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">INFORMATIONS GENERALES</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>DATE DE L'INCIDENT</label>
+          <input type="text" id="i_date" placeholder="JJ/MM/AAAA" />
+        </div>
+        <div class="form-group">
+          <label>HEURE DE L'INCIDENT</label>
+          <input type="text" id="i_heure" placeholder="HH:MM" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>LIEU</label>
+        <input type="text" id="i_lieu" placeholder="Ex : Route de Sandy Shores, BCSO..." />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>TYPE D'INCIDENT</label>
+          <input type="text" id="i_type" placeholder="Ex : Accident, Altercation..." />
+        </div>
+        <div class="form-group">
+          <label>N° DE DOSSIER</label>
+          <input type="text" id="i_dossier" placeholder="Ex : BCSO-2024-0042" />
+        </div>
+      </div>
+
+      <div class="section-label">OFFICIER RESPONSABLE</div>
+      <div class="form-group">
+        <label>NOM / GRADE</label>
+        <input type="text" id="i_officier" placeholder="Ex : Deputy Smith" />
+      </div>
+      <div class="form-group">
+        <label>UNITE</label>
+        <input type="text" id="i_unite" placeholder="Ex : BCSO — Unite Alpha" />
+      </div>
+
+      <div class="section-label">DESCRIPTION DES FAITS</div>
+      <div class="form-group">
+        <label>DESCRIPTION DETAILLEE</label>
+        <textarea id="i_description" placeholder="Decrivez les faits de maniere chronologique et precise..." style="min-height:130px;"></textarea>
+      </div>
+
+      <div class="section-label">PREUVES ET ELEMENTS COLLECTES</div>
+      <div class="form-group">
+        <label>ARMES SAISIES</label>
+        <input type="text" id="i_armes" placeholder="Ex : Pistolet 9mm, Couteau... ou Aucune" />
+      </div>
+      <div class="form-group">
+        <label>VEHICULES IMPLIQUES</label>
+        <input type="text" id="i_vehicules" placeholder="Ex : Sultan RS — Plaque 4BC-123 ou Aucun" />
+      </div>
+      <div class="form-group">
+        <label>ENREGISTREMENTS VIDEO</label>
+        <input type="text" id="i_video" placeholder="Ex : Camera de surveillance, lien, ou Aucun" />
+      </div>
+
+      <div class="section-label">CONCLUSION ET SIGNATURE</div>
+      <div class="form-group">
+        <label>CONCLUSION</label>
+        <textarea id="i_conclusion" placeholder="Resume de l'intervention, mesures prises, suites donnees..." style="min-height:90px;"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>SIGNATURE (NOM / MATRICULE)</label>
+          <input type="text" id="i_signature" placeholder="Ex : Deputy Smith — BCSO-042" />
+        </div>
+        <div class="form-group">
+          <label>DATE DE REDACTION</label>
+          <input type="text" id="i_dateRedaction" placeholder="Auto-rempli si vide" />
+        </div>
+      </div>
+    </div>
+
+    <!-- PANNEAU DROIT -->
+    <div class="panel">
+      <div class="panel-title">PERSONNES ET INTERVENTION</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">SUSPECT(S)</div>
+      <div id="suspects-list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="f3AddSuspect()">+ AJOUTER UN SUSPECT</button>
+
+      <div class="section-label">VICTIME(S)</div>
+      <div id="victimes-list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="f3AddVictime()">+ AJOUTER UNE VICTIME</button>
+
+      <div class="section-label">TEMOIN(S)</div>
+      <div id="temoins-list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="f3AddTemoin()">+ AJOUTER UN TEMOIN</button>
+
+      <div class="section-label">INTERVENTION DES SERVICES</div>
+      <div class="form-group">
+        <label>UNITES PRESENTES</label>
+        <textarea id="i_unitesPres" placeholder="Liste des unites / officiers deployes sur les lieux..." style="min-height:70px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ACTIONS ENTREPRISES</label>
+        <div id="actions-list" class="action-list"></div>
+        <button class="dynamic-add-btn" type="button" onclick="f3AddAction()">+ AJOUTER UNE ACTION</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel">
+    <div class="output-header">
+      <div class="output-title">RAPPORT GENERE</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button" onclick="f3Generer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        GENERER LE RAPPORT
+      </button>
+      <button class="btn btn-secondary" type="button" onclick="f3Copier()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        COPIER LE RAPPORT
+      </button>
+    </div>
+    <div class="output-box" id="output-incident"><span class="output-empty">&#9672; Le rapport apparaitra ici apres generation...</span></div>
+  </div>
+
+  <footer>
+    <span>&#169; BCSO — LIFE SANTOS RP</span>
+    <span>FORM-003 — RAPPORT D'INCIDENT</span>
+    <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
+  </footer>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+  var sc = 0, vc = 0, tc = 0, ac = 0;
+
+  window.f3AddSuspect = function() {
+    sc++;
+    var id = 'f3s_' + sc;
+    var div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.id = id;
+    var html = '<div class="dynamic-item-header">'
+      + '<span class="dynamic-item-label">SUSPECT ' + sc + '</span>'
+      + '<button class="dynamic-remove-btn" type="button" onclick="f3Remove(\'' + id + '\')">X RETIRER</button>'
+      + '</div>'
+      + '<div class="form-group" style="margin-bottom:8px;">'
+      + '<label>NOM / DESCRIPTION</label>'
+      + '<input type="text" placeholder="Ex : Homme, 30 ans, veste noire..." />'
+      + '</div>'
+      + '<div class="form-group" style="margin-bottom:0;">'
+      + '<label>STATUT</label>'
+      + '<input type="text" placeholder="Ex : En fuite, Interpelle, Neutralise..." />'
+      + '</div>';
+    div.innerHTML = html;
+    document.getElementById('suspects-list').appendChild(div);
+  };
+
+  window.f3AddVictime = function() {
+    vc++;
+    var id = 'f3v_' + vc;
+    var div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.id = id;
+    var html = '<div class="dynamic-item-header">'
+      + '<span class="dynamic-item-label">VICTIME ' + vc + '</span>'
+      + '<button class="dynamic-remove-btn" type="button" onclick="f3Remove(\'' + id + '\')">X RETIRER</button>'
+      + '</div>'
+      + '<div class="form-group" style="margin-bottom:8px;">'
+      + '<label>NOM</label>'
+      + '<input type="text" placeholder="Nom de la victime..." />'
+      + '</div>'
+      + '<div class="form-group" style="margin-bottom:0;">'
+      + '<label>ETAT</label>'
+      + '<input type="text" placeholder="Ex : Blesse leger, Inconscient, Decede, Indemne..." />'
+      + '</div>';
+    div.innerHTML = html;
+    document.getElementById('victimes-list').appendChild(div);
+  };
+
+  window.f3AddTemoin = function() {
+    tc++;
+    var id = 'f3t_' + tc;
+    var div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.id = id;
+    var html = '<div class="dynamic-item-header">'
+      + '<span class="dynamic-item-label">TEMOIN ' + tc + '</span>'
+      + '<button class="dynamic-remove-btn" type="button" onclick="f3Remove(\'' + id + '\')">X RETIRER</button>'
+      + '</div>'
+      + '<div class="form-group" style="margin-bottom:0;">'
+      + '<label>NOM(S)</label>'
+      + '<input type="text" placeholder="Nom du temoin..." />'
+      + '</div>';
+    div.innerHTML = html;
+    document.getElementById('temoins-list').appendChild(div);
+  };
+
+  window.f3AddAction = function() {
+    ac++;
+    var id = 'f3a_' + ac;
+    var div = document.createElement('div');
+    div.className = 'action-item';
+    div.id = id;
+    var html = '<input type="text" placeholder="Ex : Mise en securite du perimetre, Appel EMS..." />'
+      + '<button class="dynamic-remove-btn" type="button" onclick="f3Remove(\'' + id + '\')">X</button>';
+    div.innerHTML = html;
+    document.getElementById('actions-list').appendChild(div);
+  };
+
+  window.f3Remove = function(id) {
+    var el = document.getElementById(id);
+    if (el) el.remove();
+  };
+
+  window.f3Generer = function() {
+    function gv(id) {
+      var el = document.getElementById(id);
+      return el ? (el.value.trim() || '//') : '//';
+    }
+    var today = new Date();
+    var dateAuto = ('0'+today.getDate()).slice(-2) + '/' + ('0'+(today.getMonth()+1)).slice(-2) + '/' + today.getFullYear();
+
+    var suspectsStr = '';
+    var suspectItems = document.querySelectorAll('#suspects-list .dynamic-item');
+    for (var i = 0; i < suspectItems.length; i++) {
+      var inputs = suspectItems[i].querySelectorAll('input');
+      var nom = inputs[0] ? (inputs[0].value.trim() || '//') : '//';
+      var statut = inputs[1] ? (inputs[1].value.trim() || '//') : '//';
+      suspectsStr += '  Suspect ' + (i+1) + ' : ' + nom + '\n     Statut : ' + statut + '\n';
+    }
+    if (!suspectsStr) suspectsStr = '  Aucun suspect identifie\n';
+
+    var victimesStr = '';
+    var victimeItems = document.querySelectorAll('#victimes-list .dynamic-item');
+    for (var j = 0; j < victimeItems.length; j++) {
+      var vinputs = victimeItems[j].querySelectorAll('input');
+      var vnom = vinputs[0] ? (vinputs[0].value.trim() || '//') : '//';
+      var vetat = vinputs[1] ? (vinputs[1].value.trim() || '//') : '//';
+      victimesStr += '  Victime ' + (j+1) + ' : ' + vnom + '\n     Etat : ' + vetat + '\n';
+    }
+    if (!victimesStr) victimesStr = '  Aucune victime\n';
+
+    var temoinsStr = '';
+    var temoinItems = document.querySelectorAll('#temoins-list .dynamic-item');
+    for (var k = 0; k < temoinItems.length; k++) {
+      var tinput = temoinItems[k].querySelector('input');
+      var tnom = tinput ? (tinput.value.trim() || '//') : '//';
+      temoinsStr += '  Temoin ' + (k+1) + ' : ' + tnom + '\n';
+    }
+    if (!temoinsStr) temoinsStr = '  Aucun temoin\n';
+
+    var actionsStr = '';
+    var actionInputs = document.querySelectorAll('#actions-list .action-item input');
+    for (var l = 0; l < actionInputs.length; l++) {
+      var aval = actionInputs[l].value.trim() || '//';
+      actionsStr += '  - ' + aval + '\n';
+    }
+    if (!actionsStr) actionsStr = '  - //\n';
+
+    var dateRed = gv('i_dateRedaction') !== '//' ? gv('i_dateRedaction') : dateAuto;
+
+    var rapport = '╔════════════════════════════════════════╗\n'
+      + 'BCSO - RAPPORT D\'INCIDENT — ' + gv('i_type') + '\n'
+      + '╚════════════════════════════════════════╝\n\n'
+      + 'Blaine County Sheriff\'s Office\n\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      + '1. INFORMATIONS GENERALES\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + 'Date de l\'incident : ' + gv('i_date') + '\n'
+      + 'Heure de l\'incident : ' + gv('i_heure') + '\n'
+      + 'Lieu : ' + gv('i_lieu') + '\n'
+      + 'Type d\'incident : ' + gv('i_type') + '\n'
+      + 'Numero de dossier : ' + gv('i_dossier') + '\n\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      + '2. OFFICIER RESPONSABLE\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + 'Nom / Grade : ' + gv('i_officier') + '\n'
+      + 'Unite : ' + gv('i_unite') + '\n\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      + '3. DESCRIPTION DES FAITS\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + gv('i_description') + '\n\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      + '4. PERSONNES IMPLIQUEES\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + 'Suspect(s) :\n' + suspectsStr + '\n'
+      + 'Victime(s) :\n' + victimesStr + '\n'
+      + 'Temoin(s) :\n' + temoinsStr + '\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      + '5. INTERVENTION DES SERVICES\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + 'Unites presentes : ' + gv('i_unitesPres') + '\n\n'
+      + 'Actions entreprises :\n' + actionsStr + '\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      + '6. PREUVES ET ELEMENTS COLLECTES\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + 'Armes saisies : ' + gv('i_armes') + '\n'
+      + 'Vehicules impliques : ' + gv('i_vehicules') + '\n'
+      + 'Enregistrements video : ' + gv('i_video') + '\n\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      + '7. CONCLUSION\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + gv('i_conclusion') + '\n\n'
+      + '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      + 'Signature : ' + gv('i_signature') + '\n'
+      + 'Date : ' + dateRed + '\n\n'
+      + 'B.C.S.O — FORM-003 — Document officiel redige conformement aux procedures par le Blaine County Sheriff Office.';
+
+    document.getElementById('output-incident').textContent = rapport;
+  };
+
+
+  window.f3Reset = function() {
+    // Reset tous les inputs/textarea de la page
+    document.querySelectorAll('#page-form003 input[type="text"], #page-form003 textarea').forEach(function(el) {
+      el.value = '';
+    });
+    // Vider les listes dynamiques
+    document.getElementById('suspects-list').innerHTML = '';
+    document.getElementById('victimes-list').innerHTML = '';
+    document.getElementById('temoins-list').innerHTML = '';
+    document.getElementById('actions-list').innerHTML = '';
+    sc = 0; vc = 0; tc = 0; ac = 0;
+    // Reset rapport généré
+    document.getElementById('output-incident').innerHTML = '<span class="output-empty">&#9672; Le rapport apparaitra ici apres generation...</span>';
+  };
+
+  window.f3Copier = function() {
+    var output = document.getElementById('output-incident').textContent;
+    if (!output || output.indexOf('apparaitra') !== -1) {
+      alert('Veuillez d\'abord generer un rapport !');
+      return;
+    }
+    navigator.clipboard.writeText(output).then(function() {
+      var toast = document.getElementById('copyToast');
+      if (toast) {
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      }
+    });
+  };
+
+})();
+</script>
+
+</body>
+</html>
+
+<!-- ════════════════════════════════════════
+     PAGE DOA — HOME
+════════════════════════════════════════ -->
+<div id="page-doa-home" class="page">
+  <div class="bg-layer"></div>
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('home')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">&#9672; BCSO — DIVISION DES OPERATIONS AVANCEES &#9672;</div>
+    <div class="header-right">DOA / MCD<br>LIFE SANTOS RP</div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-eyebrow">&#9672; Portail des operations avancees &#9672;</div>
+    <h1 class="hero-title">DIVISION<br><span class="accent">DOA</span></h1>
+    <div class="hero-rule">
+      <div class="line"></div><div class="diamond"></div><div class="line"></div>
+    </div>
+    <p class="hero-sub" style="color:rgba(255,255,255,0.3);font-size:14px;letter-spacing:0.2em;text-transform:uppercase;">Selectionnez le type de document a rediger</p>
+  </section>
+
+  <div class="cards">
+    <div class="card" onclick="navigateTo('doa-inv')">
+      <div class="card-num-bg">01</div>
+      <div class="card-inner">
+        <div class="card-code">&#9672; DOA-INV</div>
+        <div class="card-title">INVESTIGATION</div>
+        <div class="card-divider"></div>
+        <div class="card-desc">Ouverture et suivi d'un dossier d'investigation. Chronologie, suspects, preuves et axes d'enquete.</div>
+        <button class="card-cta">REDIGER<div class="cta-arrow"></div></button>
+      </div>
+    </div>
+    <div class="card" onclick="navigateTo('doa-gng')">
+      <div class="card-num-bg">02</div>
+      <div class="card-inner">
+        <div class="card-code">&#9672; DOA-GNG</div>
+        <div class="card-title">GANG<br>INVESTIGATION</div>
+        <div class="card-divider"></div>
+        <div class="card-desc">Suivi d'un gang ou d'une organisation criminelle. Hierarchie, activites, alliances et strategie d'enquete.</div>
+        <button class="card-cta">REDIGER<div class="cta-arrow"></div></button>
+      </div>
+    </div>
+    <div class="card" onclick="navigateTo('doa-itg')">
+      <div class="card-num-bg">03</div>
+      <div class="card-inner">
+        <div class="card-code">&#9672; DOA-ITG</div>
+        <div class="card-title">INTERROGATOIRE<br>D'EXPLOITATION</div>
+        <div class="card-divider"></div>
+        <div class="card-desc">Interrogatoire mene lors d'une arrestation pour obtenir des informations sur des tiers, gangs ou organisations.</div>
+        <button class="card-cta">REDIGER<div class="cta-arrow"></div></button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>&#169; BCSO — LIFE SANTOS RP</span>
+    <span>DOA — ACCES RESTREINT — PERSONNEL AUTORISE UNIQUEMENT</span>
+    <span>v1.0.0</span>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE DOA-INV — INVESTIGATION
+════════════════════════════════════════ -->
+<div id="page-doa-inv" class="page doa-form-page">
+  <div class="bg-layer"></div>
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('doa-home')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">&#9672; DOA — INVESTIGATION &#9672;</div>
+    <div class="header-right"><button class="reset-btn" onclick="doaInvReset()"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.27"/></svg>REINITIALISER</button></div>
+  </header>
+
+  <div class="page-title-bar">
+    <div class="title-kicker">&#9672; DOA-INV — DOSSIER D'INVESTIGATION</div>
+    <h1 class="title-main">INVESTIGATION <span>DOA</span></h1>
+    <div class="title-rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="info-banner">Ouverture et suivi d'un dossier d'investigation &nbsp;|&nbsp; DOA / MCD — BCSO &nbsp;|&nbsp; CONFIDENTIEL</div>
+  </div>
+
+  <div class="main-grid">
+    <div class="panel">
+      <div class="panel-title">INFORMATIONS GENERALES</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">IDENTIFICATION DU DOSSIER</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>N&#176; DE DOSSIER</label>
+          <input type="text" id="inv_num" placeholder="DOA-INV-0001" />
+        </div>
+        <div class="form-group">
+          <label>DATE D'OUVERTURE</label>
+          <input type="text" id="inv_date" placeholder="JJ/MM/AAAA" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>INVESTIGATEUR(S)</label>
+        <input type="text" id="inv_investigateurs" placeholder="Nom / Grade" />
+      </div>
+      <div class="form-group">
+        <label>STATUT</label>
+        <div class="statut-row" id="inv_statut_row">
+          <button class="statut-badge" data-val="En cours" onclick="doaToggleStatut('inv',this)">EN COURS</button>
+          <button class="statut-badge" data-val="Suspendue" onclick="doaToggleStatut('inv',this)">SUSPENDUE</button>
+          <button class="statut-badge" data-val="Cloturee" onclick="doaToggleStatut('inv',this)">CLOTUREE</button>
+        </div>
+      </div>
+
+      <div class="section-label">CONTEXTE DE L'AFFAIRE</div>
+      <div class="form-group">
+        <label>NATURE DE L'AFFAIRE</label>
+        <input type="text" id="inv_nature" placeholder="Ex : Homicide, Trafic, Disparition..." />
+      </div>
+      <div class="form-group">
+        <label>ORIGINE</label>
+        <input type="text" id="inv_origine" placeholder="Ex : Signalement, Terrain, Interrogatoire DOA-ITG-XXXX..." />
+      </div>
+      <div class="form-group">
+        <label>RESUME DES FAITS INITIAUX</label>
+        <textarea id="inv_faits" placeholder="Decrivez le contexte et les faits qui ont motive l'ouverture du dossier..." style="min-height:100px;"></textarea>
+      </div>
+
+      <div class="section-label">ELEMENTS DE PREUVE</div>
+      <div class="form-group">
+        <label>PREUVES PHYSIQUES</label>
+        <input type="text" id="inv_preuves_phys" placeholder="Ex : Armes, vehicules, substances..." />
+      </div>
+      <div class="form-group">
+        <label>TEMOIGNAGES RECUEILLIS</label>
+        <textarea id="inv_temoignages" placeholder="Resumes des temoignages obtenus..." style="min-height:70px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ENREGISTREMENTS / PHOTOS</label>
+        <input type="text" id="inv_enreg" placeholder="Ex : Camera, lien, description..." />
+      </div>
+      <div class="form-group">
+        <label>AUTRES ELEMENTS</label>
+        <input type="text" id="inv_autres_preuves" placeholder="/" />
+      </div>
+
+      <div class="section-label">PISTES ET AXES D'ENQUETE</div>
+      <div id="inv_pistes_list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaInvAddPiste()">+ AJOUTER UNE PISTE</button>
+
+      <div class="section-label">CONCLUSION</div>
+      <div class="form-group">
+        <label>RESUME D'AVANCEMENT</label>
+        <textarea id="inv_avancement" placeholder="Etat actuel de l'enquete..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>PROCHAINES ETAPES</label>
+        <textarea id="inv_next" placeholder="Actions planifiees..." style="min-height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>DECISION FINALE (si cloturee)</label>
+        <input type="text" id="inv_decision" placeholder="Ex : Classee, Transmise au DA, Arrestation effectuee..." />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>SIGNATURE</label>
+          <input type="text" id="inv_signature" placeholder="Nom / Grade / Matricule" />
+        </div>
+        <div class="form-group">
+          <label>DATE DE MISE A JOUR</label>
+          <input type="text" id="inv_maj" placeholder="Auto si vide" />
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">PERSONNES CONCERNEES</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">SUSPECT(S)</div>
+      <div id="inv_suspects_list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaInvAddSuspect()">+ AJOUTER UN SUSPECT</button>
+
+      <div class="section-label">AUTRES INDIVIDUS LIES</div>
+      <div id="inv_autres_list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaInvAddAutre()">+ AJOUTER UN INDIVIDU</button>
+
+      <div class="section-label">CHRONOLOGIE DES EVENEMENTS</div>
+      <div id="inv_chrono_list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaInvAddChrono()">+ AJOUTER UN EVENEMENT</button>
+    </div>
+  </div>
+
+  <div class="output-panel">
+    <div class="output-header"><div class="output-title">DOSSIER GENERE</div></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button" onclick="doaInvGenerer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        GENERER LE DOSSIER
+      </button>
+      <button class="btn btn-secondary" type="button" onclick="doaCopier('output-doa-inv')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        COPIER
+      </button>
+    </div>
+    <div class="output-box" id="output-doa-inv"><span class="output-empty">&#9672; Le dossier apparaitra ici apres generation...</span></div>
+  </div>
+
+  <footer>
+    <span>&#169; BCSO — LIFE SANTOS RP</span>
+    <span>DOA-INV — INVESTIGATION</span>
+    <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE DOA-GNG — GANG INVESTIGATION
+════════════════════════════════════════ -->
+<div id="page-doa-gng" class="page doa-form-page">
+  <div class="bg-layer"></div>
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('doa-home')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">&#9672; DOA — GANG INVESTIGATION &#9672;</div>
+    <div class="header-right"><button class="reset-btn" onclick="doaGngReset()"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.27"/></svg>REINITIALISER</button></div>
+  </header>
+
+  <div class="page-title-bar">
+    <div class="title-kicker">&#9672; DOA-GNG — DOSSIER GANG INVESTIGATION</div>
+    <h1 class="title-main">GANG <span>INVESTIGATION</span></h1>
+    <div class="title-rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="info-banner">Suivi d'un gang ou organisation criminelle &nbsp;|&nbsp; DOA / MCD — BCSO &nbsp;|&nbsp; CONFIDENTIEL</div>
+  </div>
+
+  <div class="main-grid">
+    <div class="panel">
+      <div class="panel-title">IDENTIFICATION</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">DOSSIER</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>N&#176; DE DOSSIER</label>
+          <input type="text" id="gng_num" placeholder="DOA-GNG-0001" />
+        </div>
+        <div class="form-group">
+          <label>DATE D'OUVERTURE</label>
+          <input type="text" id="gng_date" placeholder="JJ/MM/AAAA" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>INVESTIGATEUR(S)</label>
+        <input type="text" id="gng_investigateurs" placeholder="Nom / Grade" />
+      </div>
+      <div class="form-group">
+        <label>STATUT</label>
+        <div class="statut-row">
+          <button class="statut-badge" data-val="En cours" onclick="doaToggleStatut('gng',this)">EN COURS</button>
+          <button class="statut-badge" data-val="Suspendue" onclick="doaToggleStatut('gng',this)">SUSPENDUE</button>
+          <button class="statut-badge" data-val="Cloturee" onclick="doaToggleStatut('gng',this)">CLOTUREE</button>
+        </div>
+      </div>
+
+      <div class="section-label">LE GROUPE</div>
+      <div class="form-group">
+        <label>NOM DU GANG / ORGANISATION</label>
+        <input type="text" id="gng_nom" placeholder="Nom officiel ou connu..." />
+      </div>
+      <div class="form-group">
+        <label>SURNOM(S) CONNU(S)</label>
+        <input type="text" id="gng_surnoms" placeholder="Ex : Les Ballas, The Grove..." />
+      </div>
+      <div class="form-group">
+        <label>ZONE(S) D'OPERATION</label>
+        <input type="text" id="gng_zones" placeholder="Ex : Sandy Shores, Grand Senora..." />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>COULEURS / SIGNES</label>
+          <input type="text" id="gng_couleurs" placeholder="Ex : Rouge, bandana..." />
+        </div>
+        <div class="form-group">
+          <label>EFFECTIF ESTIME</label>
+          <input type="text" id="gng_effectif" placeholder="Ex : ~10 membres" />
+        </div>
+      </div>
+
+      <div class="section-label">ACTIVITES CRIMINELLES</div>
+      <div class="activite-grid">
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Trafic de stupefiants">
+          <div class="activite-check"></div>TRAFIC DE STUPEFIANTS
+        </div>
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Braquages / Hold-up">
+          <div class="activite-check"></div>BRAQUAGES / HOLD-UP
+        </div>
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Extorsion / Racket">
+          <div class="activite-check"></div>EXTORSION / RACKET
+        </div>
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Trafic d'armes">
+          <div class="activite-check"></div>TRAFIC D'ARMES
+        </div>
+      </div>
+      <div class="form-group">
+        <label>AUTRE(S) ACTIVITE(S)</label>
+        <input type="text" id="gng_act_autre" placeholder="Preciser si autre activite..." />
+      </div>
+
+      <div class="section-label">INCIDENTS LIES</div>
+      <div id="gng_incidents_list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaGngAddIncident()">+ AJOUTER UN INCIDENT</button>
+
+      <div class="section-label">ELEMENTS DE PREUVE</div>
+      <div class="form-group">
+        <label>PREUVES PHYSIQUES</label>
+        <input type="text" id="gng_preuves" placeholder="/" />
+      </div>
+      <div class="form-group">
+        <label>SURVEILLANCE / FILATURE</label>
+        <input type="text" id="gng_surveillance" placeholder="/" />
+      </div>
+      <div class="form-group">
+        <label>PHOTOS / ENREGISTREMENTS</label>
+        <input type="text" id="gng_photos" placeholder="/" />
+      </div>
+      <div class="form-group">
+        <label>TEMOIGNAGES</label>
+        <textarea id="gng_temoignages" placeholder="/" style="min-height:60px;"></textarea>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">HIERARCHIE ET LIENS</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">LEADER PRESUME</div>
+      <div class="form-group">
+        <label>NOM / DESCRIPTION</label>
+        <input type="text" id="gng_leader_nom" placeholder="Nom, surnom, description physique..." />
+      </div>
+      <div class="form-group">
+        <label>ANTECEDENTS</label>
+        <input type="text" id="gng_leader_ant" placeholder="Casier, arrestations connues..." />
+      </div>
+
+      <div class="section-label">MEMBRES IDENTIFIES</div>
+      <div id="gng_membres_list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaGngAddMembre()">+ AJOUTER UN MEMBRE IDENTIFIE</button>
+
+      <div class="section-label">MEMBRES SUSPECTES (NON CONFIRMES)</div>
+      <div id="gng_suspects_list" class="dynamic-list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaGngAddSuspect()">+ AJOUTER UN MEMBRE SUSPECTE</button>
+
+      <div class="section-label">LIENS ET ALLIANCES</div>
+      <div class="form-group">
+        <label>GANGS ALLIES</label>
+        <input type="text" id="gng_allies" placeholder="/" />
+      </div>
+      <div class="form-group">
+        <label>GANGS RIVAUX / CONFLITS EN COURS</label>
+        <input type="text" id="gng_rivaux" placeholder="/" />
+      </div>
+      <div class="form-group">
+        <label>LIENS AVEC D'AUTRES DOSSIERS</label>
+        <input type="text" id="gng_liens_dossiers" placeholder="Ex : DOA-INV-0001, DOA-ITG-0002..." />
+      </div>
+
+      <div class="section-label">STRATEGIE D'ENQUETE</div>
+      <div class="form-group">
+        <label>OBJECTIF PRIORITAIRE</label>
+        <input type="text" id="gng_objectif" placeholder="Ex : Identifier le leader, saisir le stock..." />
+      </div>
+      <div class="form-group">
+        <label>ACTIONS EN COURS</label>
+        <textarea id="gng_actions_cours" placeholder="/" style="min-height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ACTIONS A PLANIFIER</label>
+        <textarea id="gng_actions_plan" placeholder="/" style="min-height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>NIVEAU DE MENACE</label>
+        <div class="menace-row">
+          <button class="menace-badge" data-level="faible" onclick="doaToggleMenace(this)">FAIBLE</button>
+          <button class="menace-badge" data-level="modere" onclick="doaToggleMenace(this)">MODERE</button>
+          <button class="menace-badge" data-level="eleve" onclick="doaToggleMenace(this)">ELEVE</button>
+          <button class="menace-badge" data-level="critique" onclick="doaToggleMenace(this)">CRITIQUE</button>
+        </div>
+      </div>
+
+      <div class="section-label">CONCLUSION</div>
+      <div class="form-group">
+        <label>RESUME D'AVANCEMENT</label>
+        <textarea id="gng_avancement" placeholder="Etat actuel..." style="min-height:70px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>PROCHAINES ETAPES</label>
+        <textarea id="gng_next" placeholder="/" style="min-height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>DECISION FINALE (si cloturee)</label>
+        <input type="text" id="gng_decision" placeholder="/" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>SIGNATURE</label>
+          <input type="text" id="gng_signature" placeholder="Nom / Grade / Matricule" />
+        </div>
+        <div class="form-group">
+          <label>DATE DE MISE A JOUR</label>
+          <input type="text" id="gng_maj" placeholder="Auto si vide" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="output-panel">
+    <div class="output-header"><div class="output-title">DOSSIER GENERE</div></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button" onclick="doaGngGenerer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        GENERER LE DOSSIER
+      </button>
+      <button class="btn btn-secondary" type="button" onclick="doaCopier('output-doa-gng')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        COPIER
+      </button>
+    </div>
+    <div class="output-box" id="output-doa-gng"><span class="output-empty">&#9672; Le dossier apparaitra ici apres generation...</span></div>
+  </div>
+
+  <footer>
+    <span>&#169; BCSO — LIFE SANTOS RP</span>
+    <span>DOA-GNG — GANG INVESTIGATION</span>
+    <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE DOA-ITG — INTERROGATOIRE D'EXPLOITATION
+════════════════════════════════════════ -->
+<div id="page-doa-itg" class="page doa-form-page">
+  <div class="bg-layer"></div>
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('doa-home')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">&#9672; DOA — INTERROGATOIRE D'EXPLOITATION &#9672;</div>
+    <div class="header-right"><button class="reset-btn" onclick="doaItgReset()"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.27"/></svg>REINITIALISER</button></div>
+  </header>
+
+  <div class="page-title-bar">
+    <div class="title-kicker">&#9672; DOA-ITG — INTERROGATOIRE D'EXPLOITATION</div>
+    <h1 class="title-main">INTERROGATOIRE <span>DOA</span></h1>
+    <div class="title-rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="info-banner">Interrogatoire mene lors d'une arrestation pour obtenir des informations sur des tiers &nbsp;|&nbsp; DOA / MCD — BCSO &nbsp;|&nbsp; CONFIDENTIEL</div>
+  </div>
+
+  <div class="main-grid">
+    <div class="panel">
+      <div class="panel-title">IDENTIFICATION</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">DOSSIER</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>N&#176; DE DOSSIER</label>
+          <input type="text" id="itg_num" placeholder="DOA-ITG-0001" />
+        </div>
+        <div class="form-group">
+          <label>DATE</label>
+          <input type="text" id="itg_date" placeholder="JJ/MM/AAAA" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>HEURE</label>
+          <input type="text" id="itg_heure" placeholder="HH:MM" />
+        </div>
+        <div class="form-group">
+          <label>LIEU</label>
+          <input type="text" id="itg_lieu" placeholder="Ex : Salle d'interrogatoire BCSO" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>INVESTIGATEUR(S)</label>
+        <input type="text" id="itg_investigateurs" placeholder="Nom / Grade" />
+      </div>
+      <div class="form-group">
+        <label>DOSSIER(S) LIE(S) CREES OU MIS A JOUR</label>
+        <input type="text" id="itg_dossiers_lies" placeholder="Ex : DOA-INV-0001, DOA-GNG-0002 ou Aucun" />
+      </div>
+
+      <div class="section-label">IDENTITE DE LA SOURCE</div>
+      <div class="form-group">
+        <label>NOM COMPLET</label>
+        <input type="text" id="itg_source_nom" placeholder="Nom de l'individu interpelle..." />
+      </div>
+      <div class="form-group">
+        <label>DESCRIPTION PHYSIQUE</label>
+        <input type="text" id="itg_source_desc" placeholder="Ex : Homme, 28 ans, 1m80, cheveux noirs..." />
+      </div>
+      <div class="form-group">
+        <label>MOTIF D'ARRESTATION</label>
+        <input type="text" id="itg_motif" placeholder="Ex : Trafic de stupefiants, Port d'arme illegal..." />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>DROITS MIRANDA</label>
+          <div class="statut-row">
+            <button class="statut-badge" data-val="Lus" onclick="doaToggleStatut('itg_miranda',this)">LUS</button>
+            <button class="statut-badge" data-val="Non lus" onclick="doaToggleStatut('itg_miranda',this)">NON LUS</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>COOPERATION</label>
+          <div class="statut-row">
+            <button class="statut-badge" data-val="Oui" onclick="doaToggleStatut('itg_coop',this)">OUI</button>
+            <button class="statut-badge" data-val="Partielle" onclick="doaToggleStatut('itg_coop',this)">PARTIELLE</button>
+            <button class="statut-badge" data-val="Non" onclick="doaToggleStatut('itg_coop',this)">NON</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">PHASE 1 — MISE EN CONTEXTE</div>
+      <div class="dynamic-item orga-qr-item">
+        <div class="dynamic-item-header"><span class="dynamic-item-label">Q : Faites-vous partie d'un gang ou d'une organisation ?</span></div>
+        <div class="form-group" style="margin-bottom:0;"><label>REPONSE</label><textarea id="itg_p1_r1" placeholder="Reponse obtenue..." style="min-height:50px;"></textarea></div>
+      </div>
+      <div class="dynamic-item orga-qr-item">
+        <div class="dynamic-item-header"><span class="dynamic-item-label">Q : Depuis combien de temps ?</span></div>
+        <div class="form-group" style="margin-bottom:0;"><label>REPONSE</label><textarea id="itg_p1_r2" placeholder="Reponse obtenue..." style="min-height:50px;"></textarea></div>
+      </div>
+      <div class="dynamic-item orga-qr-item">
+        <div class="dynamic-item-header"><span class="dynamic-item-label">Q : Quel est votre rôle au sein de ce groupe ?</span></div>
+        <div class="form-group" style="margin-bottom:0;"><label>REPONSE</label><textarea id="itg_p1_r3" placeholder="Reponse obtenue..." style="min-height:50px;"></textarea></div>
+      </div>
+      <div id="itg_p1_list" class="dynamic-list" style="margin-top:8px;"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaItgAddQR('itg_p1_list')">+ AJOUTER UNE QUESTION</button>
+
+      <div class="section-label">EVALUATION DE LA SOURCE</div>
+      <div class="form-group">
+        <label>FIABILITE ESTIMEE</label>
+        <div class="statut-row">
+          <button class="statut-badge" data-val="Faible" onclick="doaToggleStatut('itg_fiab',this)">FAIBLE</button>
+          <button class="statut-badge" data-val="Moyenne" onclick="doaToggleStatut('itg_fiab',this)">MOYENNE</button>
+          <button class="statut-badge" data-val="Elevee" onclick="doaToggleStatut('itg_fiab',this)">ELEVEE</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>INCOHERENCES / CONTRADICTIONS</label>
+        <textarea id="itg_incoherences" placeholder="Notez les incoherences relevees durant l'interrogatoire..." style="min-height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ATTITUDE GENERALE</label>
+        <input type="text" id="itg_attitude" placeholder="Ex : Nerveux, cooperatif, agressif, froid..." />
+      </div>
+      <div class="form-group">
+        <label>DEMANDE EN ECHANGE</label>
+        <input type="text" id="itg_demande" placeholder="Ex : Remise de peine, liberalisation... ou Aucune" />
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">ORGANISATIONS ET EXPLOITATION</div>
+      <div class="panel-divider"></div>
+
+      <div class="section-label">ORGANISATIONS INTERROGEES</div>
+      <div id="itg_orgas_list"></div>
+      <button class="dynamic-add-btn" type="button" onclick="doaItgAddOrga()" style="margin-bottom:20px;">+ AJOUTER UNE ORGANISATION</button>
+
+      <div class="section-label">EXPLOITATION — SUITE A DONNER</div>
+      <div class="activite-grid" id="itg_exploitation_grid">
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Ouvrir une nouvelle investigation">
+          <div class="activite-check"></div>OUVRIR UNE NOUVELLE INVESTIGATION
+        </div>
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Ouvrir une nouvelle gang investigation">
+          <div class="activite-check"></div>OUVRIR UNE NOUVELLE GANG INVESTIGATION
+        </div>
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Alimenter un dossier existant">
+          <div class="activite-check"></div>ALIMENTER UN DOSSIER EXISTANT
+        </div>
+        <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Informations non exploitables">
+          <div class="activite-check"></div>INFORMATIONS NON EXPLOITABLES
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:10px;">
+        <label>DOSSIER(S) CONCE RNE(S) / A CREER</label>
+        <input type="text" id="itg_dossiers_expl" placeholder="Ex : DOA-GNG-0001 a alimenter, DOA-INV-0002 a creer..." />
+      </div>
+      <div class="form-group">
+        <label>RESUME DES ELEMENTS TRANSMIS</label>
+        <textarea id="itg_resume_expl" placeholder="Synthese des informations exploitables..." style="min-height:80px;"></textarea>
+      </div>
+
+      <div class="section-label">REMISE DE PEINE</div>
+      <div class="form-group">
+        <label>REMISE ACCORDEE</label>
+        <div class="statut-row">
+          <button class="statut-badge" data-val="Oui" onclick="doaToggleStatut('itg_remise',this)">OUI</button>
+          <button class="statut-badge" data-val="Non" onclick="doaToggleStatut('itg_remise',this)">NON</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>MOTIF DE LA REMISE</label>
+        <div class="statut-row">
+          <button class="statut-badge" data-val="Cooperation totale" onclick="doaToggleStatut('itg_motif_remise',this)">COOPERATION TOTALE</button>
+          <button class="statut-badge" data-val="Informations exploitables" onclick="doaToggleStatut('itg_motif_remise',this)">INFOS EXPLOITABLES</button>
+          <button class="statut-badge" data-val="Autre" onclick="doaToggleStatut('itg_motif_remise',this)">AUTRE</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>AMENDE INITIALE</label>
+          <input type="text" id="itg_amende_init" placeholder="Ex : $5000" />
+        </div>
+        <div class="form-group">
+          <label>DETENTION INITIALE</label>
+          <input type="text" id="itg_prison_init" placeholder="Ex : 12 mois" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>REDUCTION APPLIQUEE</label>
+        <div class="activite-grid">
+          <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Reduction d'amende">
+            <div class="activite-check"></div>REDUCTION D'AMENDE
+          </div>
+          <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Reduction de peine">
+            <div class="activite-check"></div>REDUCTION DE PEINE
+          </div>
+          <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Peine de prison annulee">
+            <div class="activite-check"></div>PEINE DE PRISON ANNULEE
+          </div>
+          <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Amende annulee">
+            <div class="activite-check"></div>AMENDE ANNULEE
+          </div>
+          <div class="activite-item" onclick="this.classList.toggle('active');this.querySelector('.activite-check').textContent=this.classList.contains('active')?'X':'';" data-act="Liberation immediate">
+            <div class="activite-check"></div>LIBERATION IMMEDIATE
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>AMENDE FINALE</label>
+          <input type="text" id="itg_amende_fin" placeholder="Ex : $2000 ou Annulee" />
+        </div>
+        <div class="form-group">
+          <label>DETENTION FINALE</label>
+          <input type="text" id="itg_prison_fin" placeholder="Ex : 6 mois ou Annulee" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>AUTORISE PAR</label>
+        <input type="text" id="itg_autorise" placeholder="Grade / Nom du superieur autorisant la remise" />
+      </div>
+      <div class="form-group">
+        <label>REMARQUES</label>
+        <input type="text" id="itg_remarques_remise" placeholder="/" />
+      </div>
+
+      <div class="form-row" style="margin-top:8px;">
+        <div class="form-group">
+          <label>SIGNATURE INVESTIGATEUR</label>
+          <input type="text" id="itg_signature" placeholder="Nom / Grade / Matricule" />
+        </div>
+        <div class="form-group">
+          <label>DATE DE CLOTURE</label>
+          <input type="text" id="itg_date_cloture" placeholder="Auto si vide" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="output-panel">
+    <div class="output-header"><div class="output-title">RAPPORT GENERE</div></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button" onclick="doaItgGenerer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        GENERER LE RAPPORT
+      </button>
+      <button class="btn btn-secondary" type="button" onclick="doaCopier('output-doa-itg')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;stroke:currentColor;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        COPIER
+      </button>
+    </div>
+    <div class="output-box" id="output-doa-itg"><span class="output-empty">&#9672; Le rapport apparaitra ici apres generation...</span></div>
+  </div>
+
+  <footer>
+    <span>&#169; BCSO — LIFE SANTOS RP</span>
+    <span>DOA-ITG — INTERROGATOIRE D'EXPLOITATION</span>
+    <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
+  </footer>
+</div>
+
+
+<script>
+(function() {
+'use strict';
+
+/* ── UTILITAIRES COMMUNS DOA ── */
+function gv(id) { var e = document.getElementById(id); return e ? (e.value.trim() || '//') : '//'; }
+function today() { var d = new Date(); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); }
+
+window.doaCopier = function(outputId) {
+  var el = document.getElementById(outputId);
+  if (!el || el.textContent.indexOf('apparaitra') !== -1) { alert('Veuillez d\'abord generer le document.'); return; }
+  navigator.clipboard.writeText(el.textContent).then(function() {
+    var t = document.getElementById('copyToast'); if(t){t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+  });
+};
+
+/* Statut badges (un seul actif à la fois par groupe) */
+window.doaToggleStatut = function(group, btn) {
+  var row = btn.parentElement;
+  row.querySelectorAll('.statut-badge').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+};
+
+/* Niveau de menace */
+window.doaToggleMenace = function(btn) {
+  btn.closest('.menace-row').querySelectorAll('.menace-badge').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+};
+
+function getStatut(rowId) {
+  var row = document.getElementById(rowId);
+  if (!row) {
+    // chercher par data-val dans les boutons actifs
+    return '//';
+  }
+  var active = row.querySelector('.statut-badge.active');
+  return active ? active.dataset.val : '//';
+}
+function getStatutFromParent(btnGroupClass) {
+  // Alternative : chercher le badge actif dans un contexte
+  return '//';
+}
+function getActiveBadge(container) {
+  if (!container) return '//';
+  var a = container.querySelector('.statut-badge.active');
+  return a ? a.dataset.val : '//';
+}
+function getActiveMenace() {
+  var a = document.querySelector('#page-doa-gng .menace-badge.active');
+  return a ? a.dataset.level.toUpperCase() : '//';
+}
+function getActiveActivites(pageId) {
+  var acts = [];
+  document.querySelectorAll('#'+pageId+' .activite-item.active').forEach(function(el){ acts.push(el.dataset.act); });
+  return acts.length ? acts.join(', ') : 'Aucune';
+}
+
+/* ── COMPTEURS ── */
+var invSC=0,invAC=0,invCC=0,invPC=0;
+var gngMC=0,gngSC=0,gngIC=0;
+var itgOC=0,itgP1C=0;
+
+/* ════════════════════════
+   DOA-INV — Investigation
+════════════════════════ */
+window.doaInvAddSuspect = function() {
+  invSC++;
+  var id='inv_s_'+invSC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">SUSPECT '+invSC+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button></div>'
+    +'<div class="form-group" style="margin-bottom:8px;"><label>NOM / DESCRIPTION</label><input type="text" placeholder="Nom, surnom, description physique..." /></div>'
+    +'<div class="form-group" style="margin-bottom:8px;"><label>ANTECEDENTS CONNUS</label><input type="text" placeholder="Casier, arrestations..." /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>DERNIERE LOCALISATION CONNUE</label><input type="text" placeholder="Lieu, zone..." /></div>';
+  document.getElementById('inv_suspects_list').appendChild(div);
+};
+window.doaInvAddAutre = function() {
+  invAC++;
+  var id='inv_a_'+invAC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">INDIVIDU '+invAC+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button></div>'
+    +'<div class="form-group" style="margin-bottom:8px;"><label>NOM</label><input type="text" placeholder="Nom / description..." /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>ROLE DANS L\'AFFAIRE</label><input type="text" placeholder="Ex : Temoin, complice presume..." /></div>';
+  document.getElementById('inv_autres_list').appendChild(div);
+};
+window.doaInvAddChrono = function() {
+  invCC++;
+  var id='inv_c_'+invCC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">EVENEMENT '+invCC+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button></div>'
+    +'<div class="form-row" style="margin-bottom:8px;">'
+    +'<div class="form-group" style="margin-bottom:0;"><label>DATE / HEURE</label><input type="text" placeholder="JJ/MM - HH:MM" /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>DESCRIPTION</label><input type="text" placeholder="Ce qui s\'est passe..." /></div>'
+    +'</div>';
+  document.getElementById('inv_chrono_list').appendChild(div);
+};
+window.doaInvAddPiste = function() {
+  invPC++;
+  var id='inv_p_'+invPC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">PISTE '+invPC+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button></div>'
+    +'<div class="form-group" style="margin-bottom:8px;"><label>DESCRIPTION</label><input type="text" placeholder="Decrivez la piste ou l\'axe d\'enquete..." /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>ACTIONS A MENER</label><input type="text" placeholder="Ce qui doit etre fait..." /></div>';
+  document.getElementById('inv_pistes_list').appendChild(div);
+};
+
+window.doaInvGenerer = function() {
+  var statut = getActiveBadge(document.querySelector('#page-doa-inv .statut-row'));
+  var suspectsStr='';
+  document.querySelectorAll('#inv_suspects_list .dynamic-item').forEach(function(el,i){
+    var ins=el.querySelectorAll('input'); suspectsStr+='  Suspect '+(i+1)+' : '+(ins[0]?ins[0].value.trim()||'//':'//')+'\n     Antecedents : '+(ins[1]?ins[1].value.trim()||'//':'//')+'\n     Localisation : '+(ins[2]?ins[2].value.trim()||'//':'//')+'\n';
+  });
+  if(!suspectsStr) suspectsStr='  Aucun suspect identifie\n';
+
+  var autresStr='';
+  document.querySelectorAll('#inv_autres_list .dynamic-item').forEach(function(el,i){
+    var ins=el.querySelectorAll('input'); autresStr+='  Individu '+(i+1)+' : '+(ins[0]?ins[0].value.trim()||'//':'//')+'\n     Role : '+(ins[1]?ins[1].value.trim()||'//':'//')+'\n';
+  });
+  if(!autresStr) autresStr='  Aucun\n';
+
+  var chronoStr='';
+  document.querySelectorAll('#inv_chrono_list .dynamic-item').forEach(function(el,i){
+    var ins=el.querySelectorAll('input'); chronoStr+='  ['+(ins[0]?ins[0].value.trim()||'??':'??')+'] '+(ins[1]?ins[1].value.trim()||'//':'//')+'\n';
+  });
+  if(!chronoStr) chronoStr='  Aucun evenement renseigne\n';
+
+  var pistesStr='';
+  document.querySelectorAll('#inv_pistes_list .dynamic-item').forEach(function(el,i){
+    var ins=el.querySelectorAll('input'); pistesStr+='  Piste '+(i+1)+' : '+(ins[0]?ins[0].value.trim()||'//':'//')+'\n     Actions : '+(ins[1]?ins[1].value.trim()||'//':'//')+'\n';
+  });
+  if(!pistesStr) pistesStr='  Aucune piste renseignee\n';
+
+  var dateMAJ = gv('inv_maj') !== '//' ? gv('inv_maj') : today();
+  var rapport = '╔════════════════════════════════════════╗\n'
+    +'BCSO - DOA - INVESTIGATION\n'
+    +'╚════════════════════════════════════════╝\n\n'
+    +'Dossier N° : '+gv('inv_num')+'\n'
+    +'Date d\'ouverture : '+gv('inv_date')+'\n'
+    +'Investigateur(s) : '+gv('inv_investigateurs')+'\n'
+    +'Statut : '+(statut||'//')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'1. CONTEXTE DE L\'AFFAIRE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Nature : '+gv('inv_nature')+'\n'
+    +'Origine : '+gv('inv_origine')+'\n\n'
+    +'Faits initiaux :\n'+gv('inv_faits')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'2. PERSONNES CONCERNEES\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Suspect(s) :\n'+suspectsStr+'\n'
+    +'Autres individus lies :\n'+autresStr+'\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'3. CHRONOLOGIE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +chronoStr+'\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'4. ELEMENTS DE PREUVE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Preuves physiques : '+gv('inv_preuves_phys')+'\n'
+    +'Temoignages : '+gv('inv_temoignages')+'\n'
+    +'Enregistrements / Photos : '+gv('inv_enreg')+'\n'
+    +'Autres : '+gv('inv_autres_preuves')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'5. PISTES ET AXES D\'ENQUETE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +pistesStr+'\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'6. CONCLUSION\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Avancement : '+gv('inv_avancement')+'\n'
+    +'Prochaines etapes : '+gv('inv_next')+'\n'
+    +'Decision finale : '+gv('inv_decision')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Signature : '+gv('inv_signature')+'\n'
+    +'Date de mise a jour : '+dateMAJ+'\n\n'
+    +'BCSO - DOA - Document confidentiel a usage interne uniquement.';
+  document.getElementById('output-doa-inv').textContent=rapport;
+};
+
+window.doaInvReset = function() {
+  document.querySelectorAll('#page-doa-inv input, #page-doa-inv textarea').forEach(function(e){e.value='';});
+  document.querySelectorAll('#page-doa-inv .statut-badge').forEach(function(b){b.classList.remove('active');});
+  ['inv_suspects_list','inv_autres_list','inv_chrono_list','inv_pistes_list'].forEach(function(id){document.getElementById(id).innerHTML='';});
+  invSC=0;invAC=0;invCC=0;invPC=0;
+  document.getElementById('output-doa-inv').innerHTML='<span class="output-empty">&#9672; Le dossier apparaitra ici apres generation...</span>';
+};
+
+/* ════════════════════════════════
+   DOA-GNG — Gang Investigation
+════════════════════════════════ */
+window.doaGngAddMembre = function() {
+  gngMC++;
+  var id='gng_m_'+gngMC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">MEMBRE '+gngMC+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button></div>'
+    +'<div class="form-row" style="margin-bottom:0;">'
+    +'<div class="form-group" style="margin-bottom:0;"><label>NOM / DESCRIPTION</label><input type="text" placeholder="Nom, surnom..." /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>ROLE</label><input type="text" placeholder="Ex : Bras droit, Sentinelle..." /></div>'
+    +'</div>';
+  document.getElementById('gng_membres_list').appendChild(div);
+};
+window.doaGngAddSuspect = function() {
+  gngSC++;
+  var id='gng_s_'+gngSC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">SUSPECTE '+gngSC+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>NOM / DESCRIPTION</label><input type="text" placeholder="Nom ou description physique..." /></div>';
+  document.getElementById('gng_suspects_list').appendChild(div);
+};
+window.doaGngAddIncident = function() {
+  gngIC++;
+  var id='gng_i_'+gngIC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">INCIDENT '+gngIC+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button></div>'
+    +'<div class="form-row" style="margin-bottom:0;">'
+    +'<div class="form-group" style="margin-bottom:0;"><label>DATE</label><input type="text" placeholder="JJ/MM/AAAA" /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>RESUME</label><input type="text" placeholder="Description de l\'incident..." /></div>'
+    +'</div>';
+  document.getElementById('gng_incidents_list').appendChild(div);
+};
+
+window.doaGngGenerer = function() {
+  var statut = getActiveBadge(document.querySelector('#page-doa-gng .statut-row'));
+  var menace = getActiveMenace();
+  var activites = getActiveActivites('page-doa-gng');
+  var actAutre = gv('gng_act_autre'); if(actAutre !== '//') activites += ', '+actAutre;
+
+  var membresStr='';
+  document.querySelectorAll('#gng_membres_list .dynamic-item').forEach(function(el,i){
+    var ins=el.querySelectorAll('input'); membresStr+='  Membre '+(i+1)+' : '+(ins[0]?ins[0].value.trim()||'//':'//')+' — Role : '+(ins[1]?ins[1].value.trim()||'//':'//')+'\n';
+  });
+  if(!membresStr) membresStr='  Aucun membre identifie\n';
+
+  var suspectsStr='';
+  document.querySelectorAll('#gng_suspects_list .dynamic-item').forEach(function(el,i){
+    var inp=el.querySelector('input'); suspectsStr+='  Suspecte '+(i+1)+' : '+(inp?inp.value.trim()||'//':'//')+'\n';
+  });
+  if(!suspectsStr) suspectsStr='  Aucun\n';
+
+  var incidentsStr='';
+  document.querySelectorAll('#gng_incidents_list .dynamic-item').forEach(function(el,i){
+    var ins=el.querySelectorAll('input'); incidentsStr+='  ['+(ins[0]?ins[0].value.trim()||'??':'??')+'] '+(ins[1]?ins[1].value.trim()||'//':'//')+'\n';
+  });
+  if(!incidentsStr) incidentsStr='  Aucun incident renseigne\n';
+
+  var dateMAJ = gv('gng_maj') !== '//' ? gv('gng_maj') : today();
+  var rapport = '╔════════════════════════════════════════╗\n'
+    +'BCSO - DOA - GANG INVESTIGATION\n'
+    +'╚════════════════════════════════════════╝\n\n'
+    +'Dossier N° : '+gv('gng_num')+'\n'
+    +'Date d\'ouverture : '+gv('gng_date')+'\n'
+    +'Investigateur(s) : '+gv('gng_investigateurs')+'\n'
+    +'Statut : '+(statut||'//')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'1. IDENTIFICATION DU GROUPE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Nom : '+gv('gng_nom')+'\n'
+    +'Surnom(s) : '+gv('gng_surnoms')+'\n'
+    +'Zone(s) d\'operation : '+gv('gng_zones')+'\n'
+    +'Couleurs / Signes : '+gv('gng_couleurs')+'\n'
+    +'Effectif estime : '+gv('gng_effectif')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'2. HIERARCHIE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Leader presume : '+gv('gng_leader_nom')+'\n'
+    +'  Antecedents : '+gv('gng_leader_ant')+'\n\n'
+    +'Membres identifies :\n'+membresStr+'\n'
+    +'Membres suspectes :\n'+suspectsStr+'\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'3. ACTIVITES CRIMINELLES\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Activites : '+activites+'\n\n'
+    +'Incidents lies :\n'+incidentsStr+'\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'4. LIENS ET ALLIANCES\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Allies : '+gv('gng_allies')+'\n'
+    +'Rivaux / conflits : '+gv('gng_rivaux')+'\n'
+    +'Liens dossiers : '+gv('gng_liens_dossiers')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'5. ELEMENTS DE PREUVE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Preuves physiques : '+gv('gng_preuves')+'\n'
+    +'Surveillance : '+gv('gng_surveillance')+'\n'
+    +'Photos / Enreg : '+gv('gng_photos')+'\n'
+    +'Temoignages : '+gv('gng_temoignages')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'6. STRATEGIE D\'ENQUETE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Objectif prioritaire : '+gv('gng_objectif')+'\n'
+    +'Actions en cours : '+gv('gng_actions_cours')+'\n'
+    +'Actions a planifier : '+gv('gng_actions_plan')+'\n'
+    +'Niveau de menace : '+menace+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'7. CONCLUSION\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Avancement : '+gv('gng_avancement')+'\n'
+    +'Prochaines etapes : '+gv('gng_next')+'\n'
+    +'Decision finale : '+gv('gng_decision')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Signature : '+gv('gng_signature')+'\n'
+    +'Date de mise a jour : '+dateMAJ+'\n\n'
+    +'BCSO - DOA - Document confidentiel a usage interne uniquement.';
+  document.getElementById('output-doa-gng').textContent=rapport;
+};
+
+window.doaGngReset = function() {
+  document.querySelectorAll('#page-doa-gng input, #page-doa-gng textarea').forEach(function(e){e.value='';});
+  document.querySelectorAll('#page-doa-gng .statut-badge, #page-doa-gng .menace-badge').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('#page-doa-gng .activite-item').forEach(function(el){el.classList.remove('active');el.querySelector('.activite-check').textContent='';});
+  ['gng_membres_list','gng_suspects_list','gng_incidents_list'].forEach(function(id){document.getElementById(id).innerHTML='';});
+  gngMC=0;gngSC=0;gngIC=0;
+  document.getElementById('output-doa-gng').innerHTML='<span class="output-empty">&#9672; Le dossier apparaitra ici apres generation...</span>';
+};
+
+/* ══════════════════════════════════════════
+   DOA-ITG — Interrogatoire d'exploitation
+══════════════════════════════════════════ */
+window.doaItgAddQR = function(listId) {
+  itgP1C++;
+  var id='itg_qr_'+itgP1C+'_'+listId, div=document.createElement('div');
+  div.className='dynamic-item orga-qr-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">Q/R '+itgP1C+'</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X</button></div>'
+    +'<div class="form-group" style="margin-bottom:6px;"><label>QUESTION</label><input type="text" placeholder="Question posee..." /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>REPONSE</label><textarea placeholder="Reponse obtenue..." style="min-height:50px;"></textarea></div>';
+  document.getElementById(listId).appendChild(div);
+};
+
+var P2_QUESTIONS = [
+  'Connaissez-vous cette organisation / ce gang ?',
+  'Qui dirige cette organisation selon vous ?',
+  'Quels membres pouvez-vous identifier ? (noms, surnoms, descriptions)',
+  'Où opèrent-ils principalement ?',
+  'De quelles activités vivent-ils ?',
+  'Avez-vous déjà eu des contacts directs avec eux ? Si oui, dans quel contexte ?',
+  'Sont-ils armés ? Quel type d\'armement ?',
+  'Ont-ils des conflits en cours avec d\'autres groupes ?'
+];
+
+window.doaItgAddOrga = function() {
+  itgOC++;
+  var id='itg_orga_'+itgOC, div=document.createElement('div');
+  div.className='orga-block'; div.id=id;
+
+  // Build fixed Phase 2 questions
+  var p2Fixed='';
+  P2_QUESTIONS.forEach(function(q,i){
+    p2Fixed+='<div class="dynamic-item orga-qr-item">'
+      +'<div class="dynamic-item-header"><span class="dynamic-item-label">Q : '+q+'</span></div>'
+      +'<div class="form-group" style="margin-bottom:0;"><label>REPONSE</label>'
+      +'<textarea class="itg-p2-fixed" data-qi="'+(i+1)+'" placeholder="Reponse obtenue..." style="min-height:50px;"></textarea>'
+      +'</div></div>';
+  });
+
+  div.innerHTML='<div class="orga-block-header">'
+    +'<span class="orga-block-label">&#9672; ORGANISATION '+itgOC+'</span>'
+    +'<button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X RETIRER</button>'
+    +'</div>'
+    +'<div class="form-group" style="margin-bottom:10px;"><label>NOM DE L\'ORGANISATION / GANG</label><input type="text" placeholder="Nom connu ou suspecte..." /></div>'
+    +'<div class="section-label" style="margin-top:0;">PHASE 2 — INFORMATIONS SUR CETTE ORGANISATION</div>'
+    +p2Fixed
+    +'<div id="'+id+'_qrlist" class="orga-qr-list" style="margin-top:8px;"></div>'
+    +'<button class="dynamic-add-btn" type="button" onclick="doaItgAddOrgaQR(\''+id+'_qrlist\')" style="margin-top:8px;">+ AJOUTER UNE QUESTION</button>'
+    +'<div class="section-label" style="margin-top:16px;">PHASE 3 — APPROFONDISSEMENT</div>'
+    +'<div id="'+id+'_qrlist2" class="orga-qr-list"></div>'
+    +'<button class="dynamic-add-btn" type="button" onclick="doaItgAddOrgaQR(\''+id+'_qrlist2\')" style="margin-top:8px;">+ AJOUTER UNE QUESTION</button>';
+  document.getElementById('itg_orgas_list').appendChild(div);
+};
+
+var itgOrgaQRC=0;
+window.doaItgAddOrgaQR = function(listId) {
+  itgOrgaQRC++;
+  var id='itg_oqr_'+itgOrgaQRC, div=document.createElement('div');
+  div.className='dynamic-item'; div.id=id;
+  div.innerHTML='<div class="dynamic-item-header"><span class="dynamic-item-label">Q/R</span><button class="dynamic-remove-btn" type="button" onclick="document.getElementById(\''+id+'\').remove()">X</button></div>'
+    +'<div class="form-group" style="margin-bottom:6px;"><label>QUESTION</label><input type="text" placeholder="Ex : Qui dirige cette organisation ?" /></div>'
+    +'<div class="form-group" style="margin-bottom:0;"><label>REPONSE</label><textarea placeholder="Reponse obtenue..." style="min-height:50px;"></textarea></div>';
+  document.getElementById(listId).appendChild(div);
+};
+
+window.doaItgGenerer = function() {
+  var miranda = getActiveBadge(document.querySelector('#page-doa-itg .statut-row'));
+  var coop = getActiveBadge(document.querySelectorAll('#page-doa-itg .statut-row')[1]);
+  var fiab = getActiveBadge(document.querySelectorAll('#page-doa-itg .statut-row')[2]);
+  var remise = getActiveBadge(document.querySelectorAll('#page-doa-itg .statut-row')[3]);
+  var motifRemise = getActiveBadge(document.querySelectorAll('#page-doa-itg .statut-row')[4]);
+
+  // Phase 1 Q/R — questions fixes
+  var p1Fixed=[
+    {q:"Faites-vous partie d'un gang ou d'une organisation ?", id:'itg_p1_r1'},
+    {q:"Depuis combien de temps ?", id:'itg_p1_r2'},
+    {q:"Quel est votre role au sein de ce groupe ?", id:'itg_p1_r3'}
+  ];
+  var p1Str='';
+  p1Fixed.forEach(function(f){
+    var el=document.getElementById(f.id);
+    p1Str+='  Q : '+f.q+'\n  R : '+(el&&el.value.trim()?el.value.trim():'//')+'\n\n';
+  });
+  // questions supplémentaires
+  document.querySelectorAll('#itg_p1_list .dynamic-item').forEach(function(el){
+    var inp=el.querySelector('input'), ta=el.querySelector('textarea');
+    p1Str+='  Q : '+(inp?inp.value.trim()||'//':'//')+'\n  R : '+(ta?ta.value.trim()||'//':'//')+'\n\n';
+  });
+
+  // Organisations
+  var orgasStr='';
+  document.querySelectorAll('#itg_orgas_list .orga-block').forEach(function(orga,i){
+    var nomInp=orga.querySelector('input');
+    orgasStr+='Organisation '+(i+1)+' : '+(nomInp?nomInp.value.trim()||'//':'//')+'\n\n';
+    orgasStr+='Phase 2 — Questions sur cette organisation :\n';
+    // Questions fixes Phase 2
+    var p2Labels=[
+      'Connaissez-vous cette organisation / ce gang ?',
+      'Qui dirige cette organisation selon vous ?',
+      'Quels membres pouvez-vous identifier ? (noms, surnoms, descriptions)',
+      'Ou operent-ils principalement ?',
+      'De quelles activites vivent-ils ?',
+      'Avez-vous deja eu des contacts directs avec eux ? Si oui, dans quel contexte ?',
+      'Sont-ils armes ? Quel type d\'armement ?',
+      'Ont-ils des conflits en cours avec d\'autres groupes ?'
+    ];
+    var fixedTas=orga.querySelectorAll('.itg-p2-fixed');
+    fixedTas.forEach(function(ta,j){
+      orgasStr+='  Q : '+(p2Labels[j]||'Question')+'\n  R : '+(ta.value.trim()||'//')+'\n';
+    });
+    // Questions supplémentaires Phase 2
+    var qrsExtra=orga.querySelectorAll('#'+orga.id+'_qrlist .dynamic-item');
+    qrsExtra.forEach(function(qr){var inp=qr.querySelector('input'),ta=qr.querySelector('textarea');orgasStr+='  Q : '+(inp?inp.value.trim()||'//':'//')+'\n  R : '+(ta?ta.value.trim()||'//':'//')+'\n';});
+    orgasStr+='\nPhase 3 — Approfondissement :\n';
+    var qrs2=orga.querySelectorAll('#'+orga.id+'_qrlist2 .dynamic-item');
+    if(qrs2.length){qrs2.forEach(function(qr){var inp=qr.querySelector('input'),ta=qr.querySelector('textarea');orgasStr+='  Q : '+(inp?inp.value.trim()||'//':'//')+'\n  R : '+(ta?ta.value.trim()||'//':'//')+'\n';});}else{orgasStr+='  Aucune question\n';}
+    orgasStr+='\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+  });
+  if(!orgasStr) orgasStr='  Aucune organisation renseignee\n\n';
+
+  // Exploitation
+  var explActs=[];
+  document.querySelectorAll('#itg_exploitation_grid .activite-item.active').forEach(function(el){explActs.push(el.dataset.act);});
+
+  // Reductions
+  var reductions=[];
+  document.querySelectorAll('#page-doa-itg .activite-grid:last-of-type .activite-item.active').forEach(function(el){reductions.push(el.dataset.act);});
+
+  var dateCloture = gv('itg_date_cloture') !== '//' ? gv('itg_date_cloture') : today();
+  var rapport = '╔════════════════════════════════════════╗\n'
+    +'BCSO - DOA - INTERROGATOIRE D\'EXPLOITATION\n'
+    +'╚════════════════════════════════════════╝\n\n'
+    +'Dossier N° : '+gv('itg_num')+'\n'
+    +'Date : '+gv('itg_date')+'   Heure : '+gv('itg_heure')+'\n'
+    +'Lieu : '+gv('itg_lieu')+'\n'
+    +'Investigateur(s) : '+gv('itg_investigateurs')+'\n'
+    +'Dossier(s) lie(s) : '+gv('itg_dossiers_lies')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'IDENTITE DE LA SOURCE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Nom : '+gv('itg_source_nom')+'\n'
+    +'Description : '+gv('itg_source_desc')+'\n'
+    +'Motif d\'arrestation : '+gv('itg_motif')+'\n'
+    +'Droits Miranda : '+(miranda||'//')+'\n'
+    +'Cooperation : '+(coop||'//')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'PHASE 1 — MISE EN CONTEXTE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +p1Str
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'PHASE 2 & 3 — ORGANISATIONS INTERROGEES\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +orgasStr
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'EVALUATION DE LA SOURCE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Fiabilite : '+(fiab||'//')+'\n'
+    +'Incoherences : '+gv('itg_incoherences')+'\n'
+    +'Attitude : '+gv('itg_attitude')+'\n'
+    +'Demande en echange : '+gv('itg_demande')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'EXPLOITATION — SUITE A DONNER\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +(explActs.length ? explActs.map(function(a){return '  [X] '+a;}).join('\n')+'\n' : '  Aucune suite definie\n')+'\n'
+    +'Dossier(s) concerne(s) : '+gv('itg_dossiers_expl')+'\n'
+    +'Resume elements transmis : '+gv('itg_resume_expl')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    +'REMISE DE PEINE\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Remise accordee : '+(remise||'//')+'\n'
+    +'Motif : '+(motifRemise||'//')+'\n\n'
+    +'Peine initiale — Amende : '+gv('itg_amende_init')+'  |  Detention : '+gv('itg_prison_init')+'\n'
+    +'Reductions : '+(reductions.length?reductions.join(', '):'Aucune')+'\n'
+    +'Peine finale — Amende : '+gv('itg_amende_fin')+'  |  Detention : '+gv('itg_prison_fin')+'\n'
+    +'Autorise par : '+gv('itg_autorise')+'\n'
+    +'Remarques : '+gv('itg_remarques_remise')+'\n\n'
+    +'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+    +'Signature : '+gv('itg_signature')+'\n'
+    +'Date de cloture : '+dateCloture+'\n\n'
+    +'BCSO - DOA - Document confidentiel a usage interne uniquement.';
+  document.getElementById('output-doa-itg').textContent=rapport;
+};
+
+window.doaItgReset = function() {
+  document.querySelectorAll('#page-doa-itg input, #page-doa-itg textarea').forEach(function(e){e.value='';});
+  ['itg_p1_r1','itg_p1_r2','itg_p1_r3'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.querySelectorAll('#page-doa-itg .statut-badge').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('#page-doa-itg .activite-item').forEach(function(el){el.classList.remove('active');el.querySelector('.activite-check').textContent='';});
+  document.getElementById('itg_p1_list').innerHTML='';
+  document.getElementById('itg_orgas_list').innerHTML='';
+  itgOC=0;itgP1C=0;itgOrgaQRC=0;
+  document.getElementById('output-doa-itg').innerHTML='<span class="output-empty">&#9672; Le rapport apparaitra ici apres generation...</span>';
+};
+
+})();
+</script>
+
+</body>
+</html>
