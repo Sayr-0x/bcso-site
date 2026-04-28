@@ -3027,13 +3027,13 @@ Document officiel rédigé conformément aux procédures par le Blaine County Sh
             return '<span class="' + cls + '">' + escHtml(r) + '</span>';
           }).join('');
           html += '<tr>'
-            + '<td style="font-family:'Share Tech Mono',monospace;font-size:12px;">' + escHtml(u.username) + '</td>'
+            + '<td style="font-family:\'Share Tech Mono\',monospace;font-size:12px;">' + escHtml(u.username) + '</td>'
             + '<td>' + escHtml(u.displayName) + '</td>'
             + '<td>' + badges + '</td>'
             + '<td><div style="display:flex;gap:6px;flex-wrap:wrap;">'
-            + '<button class="adm-btn small" onclick="openModalRoles('' + u.id + '','' + escHtml(u.username) + '',' + JSON.stringify(u.roles) + ')">RÔLES</button>'
-            + '<button class="adm-btn small" onclick="openModalPassword('' + u.id + '','' + escHtml(u.username) + '')">MDP</button>'
-            + '<button class="adm-btn small danger" onclick="adminDeleteUser('' + u.id + '','' + escHtml(u.username) + '')">✕</button>'
+            + '<button class="adm-btn small" onclick="openModalRoles(\'' + u.id + '\',\'' + escHtml(u.username) + '\',' + JSON.stringify(u.roles) + ')">RÔLES</button>'
+            + '<button class="adm-btn small" onclick="openModalPassword(\'' + u.id + '\',\'' + escHtml(u.username) + '\')">MDP</button>'
+            + '<button class="adm-btn small danger" onclick="adminDeleteUser(\'' + u.id + '\',\'' + escHtml(u.username) + '\')">✕</button>'
             + '</div></td>'
             + '</tr>';
         });
