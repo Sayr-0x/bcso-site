@@ -901,6 +901,158 @@
     .dossier-link-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
     .dossier-link-row input { flex: 1; }
     .dossier-link-row select { width: 130px; }
+
+    /* ════════════════════════════════════════
+       AUTH — Header bouton connexion
+    ════════════════════════════════════════ */
+    .auth-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .btn-login {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.15em;
+      color: var(--gold); opacity: 0.7;
+      background: none;
+      border: 1px solid var(--gold-line);
+      padding: 6px 14px; cursor: pointer;
+      transition: opacity 0.2s, border-color 0.2s;
+    }
+    .btn-login:hover { opacity: 1; border-color: var(--gold-line-strong); }
+    .btn-login svg { width: 11px; height: 11px; stroke: currentColor; fill: none; }
+
+    .user-chip {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .user-chip-name {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.12em;
+      color: rgba(212,160,23,0.7);
+      line-height: 1.5;
+      text-align: right;
+    }
+    .user-chip-name small {
+      display: block;
+      font-size: 8px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.1em;
+    }
+    .btn-logout {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.2);
+      background: none;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 5px 10px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { color: #e74c3c; border-color: rgba(192,57,43,0.35); }
+    .btn-logout svg { width: 10px; height: 10px; stroke: currentColor; fill: none; }
+
+    /* Sections réservées (cachées si non connecté) */
+    .restricted-zone { display: none; }
+    .restricted-zone.visible { display: block; }
+
+    /* ════════════════════════════════════════
+       PAGE LOGIN (modale / overlay)
+    ════════════════════════════════════════ */
+    .login-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(6,8,15,0.92);
+      align-items: center; justify-content: center;
+      animation: fadeIn 0.25s ease;
+    }
+    .login-overlay.open { display: flex; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    .login-box {
+      width: 100%; max-width: 400px;
+      background: var(--dark-2);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-top: 2px solid var(--gold);
+      padding: 40px 40px 36px;
+      position: relative;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .login-close {
+      position: absolute; top: 14px; right: 14px;
+      background: none; border: none;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.2); cursor: pointer;
+      transition: color 0.2s;
+    }
+    .login-close:hover { color: var(--white); }
+
+    .login-kicker {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.3em;
+      color: var(--gold); opacity: 0.6;
+      text-align: center; margin-bottom: 6px;
+    }
+    .login-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px; letter-spacing: 0.08em;
+      color: var(--white); text-align: center; margin-bottom: 24px;
+    }
+    .login-title span { color: var(--gold); }
+    .login-divider { height: 1px; background: var(--gold-line); margin-bottom: 24px; }
+
+    .login-field { margin-bottom: 14px; }
+    .login-field label {
+      display: block;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em;
+      color: var(--grey-light); margin-bottom: 6px;
+    }
+    .login-field input {
+      width: 100%; padding: 10px 14px;
+      background: var(--dark-3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--gold-line);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px; font-weight: 500;
+      outline: none; border-radius: 0;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .login-field input:focus {
+      border-bottom-color: var(--gold);
+      background: rgba(212,160,23,0.04);
+    }
+    .login-field input::placeholder { color: rgba(255,255,255,0.18); font-size: 13px; }
+
+    .login-error {
+      margin-bottom: 10px; padding: 9px 14px;
+      background: var(--red-dim); border: 1px solid var(--red-line);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em;
+      color: #e74c3c; text-align: center; display: none;
+    }
+    .login-submit {
+      width: 100%; margin-top: 20px; padding: 13px;
+      background: var(--gold); color: var(--black);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 0.2em;
+      border: none; cursor: pointer; transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .login-submit:hover { background: var(--gold-2); }
+    .login-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .login-submit svg { width: 13px; height: 13px; stroke: currentColor; fill: none; }
+    .login-footer-note {
+      margin-top: 16px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 8px; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.1); text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -922,7 +1074,15 @@
       </div>
     </div>
     <div class="header-center">◈ BLAINE COUNTY S.O. ◈</div>
-    <div class="header-right">LIFE SANTOS RP<br>ACCÈS RESTREINT</div>
+    <div class="header-right">
+      <div class="auth-zone" id="auth-zone">
+        <!-- Remplacé dynamiquement par JS -->
+        <button class="btn-login" onclick="openLogin()">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="9" y2="12"/></svg>
+          SE CONNECTER
+        </button>
+      </div>
+    </div>
   </header>
 
   <section class="hero">
@@ -997,15 +1157,17 @@
   </div>
 
 
-  <!-- Accès DOA -->
-  <div class="doa-access-wrap">
-    <div class="doa-section">
-      <div class="doa-access-label">ACCÈS RESTREINT — PERSONNEL AUTORISÉ</div>
-      <button class="doa-access-btn" onclick="navigateTo('doa-home')">
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        ◈ PORTAIL DOA — DIVISION DES OPÉRATIONS AVANCÉES
-        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
+  <!-- Accès DOA — visible uniquement si connecté avec accès MCD/État Major -->
+  <div class="restricted-zone" id="zone-doa">
+    <div class="doa-access-wrap">
+      <div class="doa-section">
+        <div class="doa-access-label">ACCÈS RESTREINT — PERSONNEL AUTORISÉ</div>
+        <button class="doa-access-btn" onclick="navigateTo('doa-home')">
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          ◈ PORTAIL DOA — DIVISION DES OPÉRATIONS AVANCÉES
+          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1206,10 +1368,194 @@
 <!-- Toast -->
 <div class="copy-toast" id="copyToast">✓ RAPPORT COPIÉ</div>
 
+<!-- ════════════════════════════════════════
+     MODALE LOGIN
+════════════════════════════════════════ -->
+<div class="login-overlay" id="login-overlay" onclick="handleOverlayClick(event)">
+  <div class="login-box">
+    <button class="login-close" onclick="closeLogin()">✕ FERMER</button>
+    <div class="login-kicker">◈ BCSO — LIFE SANTOS RP ◈</div>
+    <div class="login-title">ACCÈS <span>SÉCURISÉ</span></div>
+    <div class="login-divider"></div>
+
+    <div class="login-field">
+      <label>◈ IDENTIFIANT</label>
+      <input type="text" id="login-username" placeholder="Votre identifiant..." autocomplete="username" />
+    </div>
+    <div class="login-field">
+      <label>◈ MOT DE PASSE</label>
+      <input type="password" id="login-password" placeholder="••••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter') doLogin()" />
+    </div>
+
+    <div class="login-error" id="login-error"></div>
+
+    <button class="login-submit" id="login-submit-btn" onclick="doLogin()">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      SE CONNECTER
+    </button>
+    <div class="login-footer-note">USAGE INTERNE — BLAINE COUNTY SHERIFF'S OFFICE</div>
+  </div>
+</div>
+
 <script>
-  /* ── NAVIGATION SPA ── */
+  // ══════════════════════════════════════════════════════════
+  // CONFIG — Remplace par l'URL de ton backend Render
+  // ══════════════════════════════════════════════════════════
+  var BACKEND_URL = 'http://localhost:3000';
+
+  // ══════════════════════════════════════════════════════════
+  // STATE AUTH
+  // ══════════════════════════════════════════════════════════
+  var currentUser = null;
+  var userAccess  = {};
+
+  // ══════════════════════════════════════════════════════════
+  // INIT — Vérifie session au chargement
+  // ══════════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', function() {
+    fetch(BACKEND_URL + '/api/me', { credentials: 'include' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.authenticated) {
+          currentUser = data.user;
+          userAccess  = data.access;
+        }
+        refreshAuthUI();
+      })
+      .catch(function() {
+        refreshAuthUI(); // pas de backend = pas connecté, site fonctionne quand même
+      });
+  });
+
+  // ══════════════════════════════════════════════════════════
+  // UI AUTH
+  // ══════════════════════════════════════════════════════════
+  function refreshAuthUI() {
+    var zone = document.getElementById('auth-zone');
+    var zoneDoa = document.getElementById('zone-doa');
+
+    if (currentUser) {
+      // Affiche nom + bouton déconnexion
+      zone.innerHTML =
+        '<div class="user-chip">'
+        + '<div class="user-chip-name">'
+        + escHtml((currentUser.displayName || currentUser.username).toUpperCase())
+        + '<small>' + escHtml((currentUser.roles || []).join(' · ')) + '</small>'
+        + '</div>'
+        + '<button class="btn-logout" onclick="doLogout()">'
+        + '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>'
+        + 'DÉCONNEXION</button>'
+        + '</div>';
+
+      // Affiche les zones restreintes selon les droits
+      if (zoneDoa) zoneDoa.classList.toggle('visible', !!(userAccess.doa));
+
+    } else {
+      // Affiche bouton connexion
+      zone.innerHTML =
+        '<button class="btn-login" onclick="openLogin()">'
+        + '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="9" y2="12"/></svg>'
+        + 'SE CONNECTER</button>';
+
+      // Cache les zones restreintes
+      if (zoneDoa) zoneDoa.classList.remove('visible');
+    }
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // MODALE
+  // ══════════════════════════════════════════════════════════
+  function openLogin() {
+    document.getElementById('login-overlay').classList.add('open');
+    document.getElementById('login-username').focus();
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+  }
+
+  function closeLogin() {
+    document.getElementById('login-overlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('login-overlay')) closeLogin();
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // LOGIN / LOGOUT
+  // ══════════════════════════════════════════════════════════
+  function doLogin() {
+    var username = document.getElementById('login-username').value.trim();
+    var password = document.getElementById('login-password').value;
+    var errBox   = document.getElementById('login-error');
+    var btn      = document.getElementById('login-submit-btn');
+
+    if (!username || !password) {
+      showLoginError('VEUILLEZ REMPLIR TOUS LES CHAMPS');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'CONNEXION EN COURS...';
+    errBox.style.display = 'none';
+
+    fetch(BACKEND_URL + '/api/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username, password: password })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        currentUser = data.user;
+        userAccess  = data.access;
+        closeLogin();
+        refreshAuthUI();
+      } else {
+        showLoginError(data.error || 'IDENTIFIANT OU MOT DE PASSE INCORRECT');
+      }
+    })
+    .catch(function() {
+      showLoginError('ERREUR DE CONNEXION AU SERVEUR');
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> SE CONNECTER';
+    });
+  }
+
+  function showLoginError(msg) {
+    var e = document.getElementById('login-error');
+    e.textContent = msg;
+    e.style.display = 'block';
+  }
+
+  function doLogout() {
+    fetch(BACKEND_URL + '/api/logout', { method: 'POST', credentials: 'include' })
+      .finally(function() {
+        currentUser = null;
+        userAccess  = {};
+        refreshAuthUI();
+      });
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // NAVIGATION SPA
+  // ══════════════════════════════════════════════════════════
   function navigateTo(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Pages nécessitant une connexion
+    var restricted = ['doa-home','doa-inv','doa-gng','doa-itg'];
+    if (restricted.indexOf(page) !== -1 && !currentUser) {
+      openLogin();
+      return;
+    }
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     document.getElementById('page-' + page).classList.add('active');
     window.scrollTo(0, 0);
     if (page === 'form001') {
