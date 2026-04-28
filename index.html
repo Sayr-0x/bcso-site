@@ -30,6 +30,185 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ════════════════════════════════════════
+       PAGE ADMIN
+    ════════════════════════════════════════ */
+    #page-admin { min-height: 100vh; background: var(--black); }
+    #page-admin .bg-layer {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(212,160,23,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 10% 80%, rgba(212,160,23,0.04) 0%, transparent 50%),
+        var(--black);
+    }
+    #page-admin header {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 48px; height: 64px;
+      border-bottom: 1px solid rgba(212,160,23,0.25);
+      background: rgba(6,8,15,0.97);
+    }
+    .admin-wrap { position: relative; z-index: 5; max-width: 1200px; margin: 0 auto; padding: 40px 40px 80px; }
+    .admin-title-bar { margin-bottom: 36px; }
+    .admin-kicker {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .admin-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 52px;
+      letter-spacing: 0.05em; color: var(--white); line-height: 1;
+    }
+    .admin-title .accent { color: var(--gold); }
+    .admin-rule { display: flex; align-items: center; gap: 16px; margin: 16px 0 24px; }
+    .admin-rule .line { flex: 1; height: 1px; background: var(--gold-line); }
+    .admin-rule .diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
+
+    /* Onglets */
+    .admin-tabs { display: flex; gap: 2px; margin-bottom: 32px; border-bottom: 1px solid rgba(212,160,23,0.15); }
+    .admin-tab {
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.35); background: none; border: none; cursor: pointer;
+      padding: 12px 28px; text-transform: uppercase; border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s; margin-bottom: -1px;
+    }
+    .admin-tab:hover { color: rgba(212,160,23,0.7); }
+    .admin-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+
+    /* Panels */
+    .adm-panel {
+      background: var(--dark-2); border: 1px solid rgba(255,255,255,0.05);
+      padding: 28px 32px; margin-bottom: 20px;
+    }
+    .adm-panel-title {
+      font-family: 'Share Tech Mono', monospace; font-size: 11px;
+      letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 1px solid rgba(212,160,23,0.15);
+    }
+
+    /* Formulaire création membre */
+    .adm-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .adm-form-full { grid-column: 1 / -1; }
+    .adm-label {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.15em; color: rgba(212,160,23,0.6); text-transform: uppercase;
+      display: block; margin-bottom: 6px;
+    }
+    .adm-input {
+      width: 100%; background: var(--dark-3); border: none;
+      border-bottom: 1px solid rgba(212,160,23,0.25); padding: 10px 14px;
+      color: var(--white); font-family: 'Barlow Condensed', sans-serif; font-size: 15px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .adm-input:focus { border-bottom-color: var(--gold); background: rgba(212,160,23,0.04); }
+
+    /* Checkboxes rôles */
+    .adm-roles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .adm-role-chip {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+      padding: 5px 12px; border: 1px solid rgba(212,160,23,0.2); color: rgba(255,255,255,0.35);
+      cursor: pointer; transition: all 0.2s; user-select: none; text-transform: uppercase;
+    }
+    .adm-role-chip.selected { border-color: var(--gold); color: var(--gold); background: rgba(212,160,23,0.08); }
+
+    /* Boutons admin */
+    .adm-btn {
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.15em;
+      padding: 10px 24px; border: 1px solid var(--gold); background: rgba(212,160,23,0.08);
+      color: var(--gold); cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+    }
+    .adm-btn:hover { background: rgba(212,160,23,0.18); }
+    .adm-btn.danger { border-color: var(--red); color: var(--red); background: rgba(192,57,43,0.08); }
+    .adm-btn.danger:hover { background: rgba(192,57,43,0.18); }
+    .adm-btn.small { font-size: 10px; padding: 6px 14px; }
+    .adm-btn.green { border-color: var(--green); color: var(--green); background: rgba(26,188,156,0.08); }
+    .adm-btn.green:hover { background: rgba(26,188,156,0.18); }
+
+    /* Table membres */
+    .adm-table { width: 100%; border-collapse: collapse; }
+    .adm-table th {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.15em;
+      color: rgba(212,160,23,0.5); text-align: left; padding: 10px 14px;
+      border-bottom: 1px solid rgba(212,160,23,0.1); text-transform: uppercase;
+    }
+    .adm-table td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 14px; vertical-align: middle; }
+    .adm-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .role-badge {
+      display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 9px;
+      letter-spacing: 0.1em; padding: 2px 8px; border: 1px solid rgba(212,160,23,0.3);
+      color: rgba(212,160,23,0.7); margin: 2px; text-transform: uppercase;
+    }
+    .role-badge.em { border-color: rgba(231,76,60,0.4); color: rgba(231,76,60,0.8); }
+
+    /* Logs */
+    .log-line {
+      display: grid; grid-template-columns: 160px 80px 140px 1fr;
+      gap: 12px; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.03);
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; align-items: center;
+    }
+    .log-line:hover { background: rgba(255,255,255,0.02); }
+    .log-ts { color: rgba(255,255,255,0.25); }
+    .log-type { font-size: 10px; letter-spacing: 0.1em; }
+    .log-type.ok { color: var(--green); }
+    .log-type.fail { color: var(--red); }
+    .log-type.info { color: var(--gold); }
+    .log-user { color: var(--white); }
+    .log-detail { color: rgba(255,255,255,0.3); font-size: 10px; }
+
+    /* Webhooks */
+    .webhook-row { margin-bottom: 20px; }
+    .webhook-label {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase;
+      margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+    }
+    .webhook-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--grey); }
+    .webhook-dot.set { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+    /* Modale édition rôles / reset MDP */
+    .adm-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 1000; align-items: center; justify-content: center;
+    }
+    .adm-modal-overlay.open { display: flex; }
+    .adm-modal {
+      background: var(--dark-2); border: 1px solid rgba(212,160,23,0.25);
+      padding: 36px 40px; width: 480px; max-width: 95vw; position: relative;
+    }
+    .adm-modal-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+      letter-spacing: 0.06em; color: var(--white); margin-bottom: 24px;
+    }
+    .adm-modal-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; color: rgba(255,255,255,0.3);
+      font-size: 20px; cursor: pointer; line-height: 1;
+    }
+    .adm-modal-close:hover { color: var(--white); }
+    .adm-msg {
+      font-family: 'Share Tech Mono', monospace; font-size: 11px;
+      letter-spacing: 0.1em; padding: 10px 14px; margin-top: 14px; display: none;
+    }
+    .adm-msg.ok { background: rgba(26,188,156,0.1); border: 1px solid rgba(26,188,156,0.3); color: var(--green); }
+    .adm-msg.err { background: rgba(192,57,43,0.1); border: 1px solid rgba(192,57,43,0.3); color: var(--red); }
+    .adm-actions-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+    /* Bouton accès admin sur page home */
+    .admin-access-wrap {
+      display: none; max-width: 1100px; margin: -20px auto 0; padding: 0 40px 40px;
+    }
+    .admin-access-wrap.visible { display: block; }
+    .admin-access-btn {
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(212,160,23,0.5); background: none;
+      border: 1px solid rgba(212,160,23,0.15); padding: 10px 24px;
+      cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .admin-access-btn:hover { border-color: rgba(212,160,23,0.4); color: var(--gold); }
+
     body {
       font-family: 'Barlow Condensed', sans-serif;
       background: var(--black);
@@ -1171,6 +1350,15 @@
     </div>
   </div>
 
+  <!-- Accès Admin — visible uniquement ETAT_MAJOR -->
+  <div class="admin-access-wrap" id="zone-admin">
+    <button class="admin-access-btn" onclick="navigateTo('admin')">
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      ◈ PANNEAU D'ADMINISTRATION — ÉTAT-MAJOR
+      <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+
   <footer>
     <span>© BCSO — LIFE SANTOS RP</span>
     <span>CONFIDENTIEL — USAGE INTERNE UNIQUEMENT</span>
@@ -1450,6 +1638,8 @@
 
       // Affiche les zones restreintes selon les droits
       if (zoneDoa) zoneDoa.classList.toggle('visible', !!(userAccess.doa));
+      var zoneAdmin = document.getElementById('zone-admin');
+      if (zoneAdmin) zoneAdmin.classList.toggle('visible', !!(userAccess.admin));
 
     } else {
       // Affiche bouton connexion
@@ -1460,6 +1650,8 @@
 
       // Cache les zones restreintes
       if (zoneDoa) zoneDoa.classList.remove('visible');
+      var zoneAdmin = document.getElementById('zone-admin');
+      if (zoneAdmin) zoneAdmin.classList.remove('visible');
     }
   }
 
@@ -1550,10 +1742,18 @@
   // ══════════════════════════════════════════════════════════
   function navigateTo(page) {
     // Pages nécessitant une connexion
-    var restricted = ['doa-home','doa-inv','doa-gng','doa-itg'];
+    var restricted = ['doa-home','doa-inv','doa-gng','doa-itg','admin'];
     if (restricted.indexOf(page) !== -1 && !currentUser) {
       openLogin();
       return;
+    }
+    // Vérif accès admin
+    if (page === 'admin' && (!userAccess || !userAccess.admin)) {
+      return;
+    }
+    // Charger les données admin à l'ouverture
+    if (page === 'admin') {
+      setTimeout(function(){ adminLoadUsers(); adminLoadWebhooks(); }, 100);
     }
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     document.getElementById('page-' + page).classList.add('active');
@@ -2616,6 +2816,400 @@ Document officiel rédigé conformément aux procédures par le Blaine County Sh
 })();
 </script>
 
+
+<!-- ════════════════════════════════════════
+     PAGE ADMIN — ÉTAT-MAJOR UNIQUEMENT
+════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="bg-layer"></div>
+
+  <header>
+    <div class="header-left">
+      <button class="back-btn" onclick="navigateTo('home')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        RETOUR
+      </button>
+      <div class="sys-dot"></div>
+    </div>
+    <div class="header-center">◈ BCSO — ADMINISTRATION ◈</div>
+    <div class="header-right" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(212,160,23,0.4);letter-spacing:0.1em;">ACCÈS ÉTAT-MAJOR</div>
+  </header>
+
+  <div class="admin-wrap">
+    <div class="admin-title-bar">
+      <div class="admin-kicker">◈ Panneau de contrôle</div>
+      <div class="admin-title">ADMIN<span class="accent"> BCSO</span></div>
+      <div class="admin-rule"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    </div>
+
+    <!-- Onglets -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="adminTab('membres')">◈ MEMBRES</button>
+      <button class="admin-tab" onclick="adminTab('logs')">◈ LOGS CONNEXION</button>
+      <button class="admin-tab" onclick="adminTab('webhooks')">◈ WEBHOOKS DISCORD</button>
+    </div>
+
+    <!-- ── ONGLET MEMBRES ── -->
+    <div id="admin-panel-membres" class="admin-panel active">
+
+      <!-- Créer un compte -->
+      <div class="adm-panel">
+        <div class="adm-panel-title">◈ Créer un nouveau compte</div>
+        <div class="adm-form">
+          <div>
+            <label class="adm-label">Nom d'utilisateur</label>
+            <input class="adm-input" id="new-username" type="text" placeholder="deputy.nom" autocomplete="off">
+          </div>
+          <div>
+            <label class="adm-label">Nom affiché</label>
+            <input class="adm-input" id="new-displayname" type="text" placeholder="Deputy Nom" autocomplete="off">
+          </div>
+          <div>
+            <label class="adm-label">Mot de passe</label>
+            <input class="adm-input" id="new-password" type="password" placeholder="min. 6 caractères" autocomplete="new-password">
+          </div>
+          <div>
+            <label class="adm-label">Rôles</label>
+            <div class="adm-roles" id="new-roles-chips">
+              <div class="adm-role-chip" data-role="BCSO" onclick="toggleRoleChip(this)">BCSO</div>
+              <div class="adm-role-chip" data-role="MCD" onclick="toggleRoleChip(this)">MCD</div>
+              <div class="adm-role-chip" data-role="SHERIFF_ACADEMY" onclick="toggleRoleChip(this)">ACADEMY</div>
+              <div class="adm-role-chip" data-role="ROOKIE" onclick="toggleRoleChip(this)">ROOKIE</div>
+              <div class="adm-role-chip" data-role="ETAT_MAJOR" onclick="toggleRoleChip(this)">ÉTAT-MAJOR</div>
+            </div>
+          </div>
+        </div>
+        <div class="adm-actions-row">
+          <button class="adm-btn green" onclick="adminCreateUser()">+ CRÉER LE COMPTE</button>
+        </div>
+        <div class="adm-msg" id="msg-create"></div>
+      </div>
+
+      <!-- Liste des membres -->
+      <div class="adm-panel">
+        <div class="adm-panel-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>◈ Membres actifs</span>
+          <button class="adm-btn small" onclick="adminLoadUsers()">↻ ACTUALISER</button>
+        </div>
+        <div id="admin-users-table">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.2);padding:20px 0;">Chargement...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── ONGLET LOGS ── -->
+    <div id="admin-panel-logs" class="admin-panel">
+      <div class="adm-panel">
+        <div class="adm-panel-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>◈ Historique des connexions (100 derniers)</span>
+          <button class="adm-btn small" onclick="adminLoadLogs()">↻ ACTUALISER</button>
+        </div>
+        <div class="log-line" style="border-bottom:1px solid rgba(212,160,23,0.15);margin-bottom:4px;">
+          <span class="adm-label" style="margin:0;">HORODATAGE</span>
+          <span class="adm-label" style="margin:0;">TYPE</span>
+          <span class="adm-label" style="margin:0;">UTILISATEUR</span>
+          <span class="adm-label" style="margin:0;">DÉTAIL / IP</span>
+        </div>
+        <div id="admin-logs-list">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.2);padding:20px 14px;">Chargement...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ONGLET WEBHOOKS ── -->
+    <div id="admin-panel-webhooks" class="admin-panel">
+      <div class="adm-panel">
+        <div class="adm-panel-title">◈ URLs Webhook Discord</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:24px;line-height:1.6;">
+          Colle ici les URLs webhook de tes salons Discord. Les rapports y seront envoyés automatiquement une fois l'intégration Discord activée.
+        </p>
+
+        <div class="webhook-row">
+          <div class="webhook-label">
+            <div class="webhook-dot" id="wh-dot-001"></div>
+            FORM-001 — RAPPORT STANDARD
+          </div>
+          <input class="adm-input" id="wh-form001" type="text" placeholder="https://discord.com/api/webhooks/...">
+        </div>
+
+        <div class="webhook-row">
+          <div class="webhook-label">
+            <div class="webhook-dot" id="wh-dot-002"></div>
+            FORM-002 — RAPPORT BRAQUAGE
+          </div>
+          <input class="adm-input" id="wh-form002" type="text" placeholder="https://discord.com/api/webhooks/...">
+        </div>
+
+        <div class="webhook-row">
+          <div class="webhook-label">
+            <div class="webhook-dot" id="wh-dot-003"></div>
+            FORM-003 — RAPPORT D'INCIDENT
+          </div>
+          <input class="adm-input" id="wh-form003" type="text" placeholder="https://discord.com/api/webhooks/...">
+        </div>
+
+        <div class="adm-actions-row">
+          <button class="adm-btn green" onclick="adminSaveWebhooks()">ENREGISTRER LES WEBHOOKS</button>
+        </div>
+        <div class="adm-msg" id="msg-webhooks"></div>
+      </div>
+    </div>
+
+  </div><!-- /admin-wrap -->
+</div><!-- /page-admin -->
+
+<!-- Modale édition rôles -->
+<div class="adm-modal-overlay" id="modal-roles">
+  <div class="adm-modal">
+    <button class="adm-modal-close" onclick="closeModalRoles()">✕</button>
+    <div class="adm-modal-title">MODIFIER LES RÔLES</div>
+    <div style="margin-bottom:8px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);" id="modal-roles-username"></div>
+    <div class="adm-roles" id="modal-roles-chips">
+      <div class="adm-role-chip" data-role="BCSO" onclick="toggleRoleChip(this)">BCSO</div>
+      <div class="adm-role-chip" data-role="MCD" onclick="toggleRoleChip(this)">MCD</div>
+      <div class="adm-role-chip" data-role="SHERIFF_ACADEMY" onclick="toggleRoleChip(this)">ACADEMY</div>
+      <div class="adm-role-chip" data-role="ROOKIE" onclick="toggleRoleChip(this)">ROOKIE</div>
+      <div class="adm-role-chip" data-role="ETAT_MAJOR" onclick="toggleRoleChip(this)">ÉTAT-MAJOR</div>
+    </div>
+    <div class="adm-actions-row">
+      <button class="adm-btn green" onclick="adminSaveRoles()">ENREGISTRER</button>
+      <button class="adm-btn" onclick="closeModalRoles()">ANNULER</button>
+    </div>
+    <div class="adm-msg" id="msg-roles"></div>
+  </div>
+</div>
+
+<!-- Modale reset MDP -->
+<div class="adm-modal-overlay" id="modal-password">
+  <div class="adm-modal">
+    <button class="adm-modal-close" onclick="closeModalPassword()">✕</button>
+    <div class="adm-modal-title">RÉINITIALISER MDP</div>
+    <div style="margin-bottom:16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);" id="modal-password-username"></div>
+    <label class="adm-label">Nouveau mot de passe</label>
+    <input class="adm-input" id="modal-new-password" type="password" placeholder="min. 6 caractères">
+    <div class="adm-actions-row">
+      <button class="adm-btn danger" onclick="adminSavePassword()">RÉINITIALISER</button>
+      <button class="adm-btn" onclick="closeModalPassword()">ANNULER</button>
+    </div>
+    <div class="adm-msg" id="msg-password"></div>
+  </div>
+</div>
+
+<script>
+
+  // ══════════════════════════════════════════════════════════
+  // ADMIN
+  // ══════════════════════════════════════════════════════════
+  var adminEditUserId = null;
+
+  function adminTab(tab) {
+    document.querySelectorAll('.admin-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.admin-panel').forEach(function(p){ p.classList.remove('active'); });
+    event.currentTarget.classList.add('active');
+    document.getElementById('admin-panel-' + tab).classList.add('active');
+    if (tab === 'membres') adminLoadUsers();
+    if (tab === 'logs') adminLoadLogs();
+    if (tab === 'webhooks') adminLoadWebhooks();
+  }
+
+  // ── Charger membres ───────────────────────────────────────
+  function adminLoadUsers() {
+    fetch(BACKEND_URL + '/api/admin/users', { credentials: 'include' })
+      .then(function(r){ return r.json(); })
+      .then(function(users) {
+        var html = '<table class="adm-table"><thead><tr>'
+          + '<th>UTILISATEUR</th><th>NOM AFFICHÉ</th><th>RÔLES</th><th>ACTIONS</th>'
+          + '</tr></thead><tbody>';
+        users.forEach(function(u) {
+          var badges = (u.roles || []).map(function(r){
+            var cls = r === 'ETAT_MAJOR' ? 'role-badge em' : 'role-badge';
+            return '<span class="' + cls + '">' + escHtml(r) + '</span>';
+          }).join('');
+          html += '<tr>'
+            + '<td style="font-family:'Share Tech Mono',monospace;font-size:12px;">' + escHtml(u.username) + '</td>'
+            + '<td>' + escHtml(u.displayName) + '</td>'
+            + '<td>' + badges + '</td>'
+            + '<td><div style="display:flex;gap:6px;flex-wrap:wrap;">'
+            + '<button class="adm-btn small" onclick="openModalRoles('' + u.id + '','' + escHtml(u.username) + '',' + JSON.stringify(u.roles) + ')">RÔLES</button>'
+            + '<button class="adm-btn small" onclick="openModalPassword('' + u.id + '','' + escHtml(u.username) + '')">MDP</button>'
+            + '<button class="adm-btn small danger" onclick="adminDeleteUser('' + u.id + '','' + escHtml(u.username) + '')">✕</button>'
+            + '</div></td>'
+            + '</tr>';
+        });
+        html += '</tbody></table>';
+        document.getElementById('admin-users-table').innerHTML = html;
+      })
+      .catch(function(){ document.getElementById('admin-users-table').innerHTML = '<div style="color:var(--red);font-family:Share Tech Mono,monospace;font-size:11px;padding:20px 0;">Erreur de chargement</div>'; });
+  }
+
+  // ── Créer un membre ───────────────────────────────────────
+  function adminCreateUser() {
+    var username    = document.getElementById('new-username').value.trim();
+    var displayName = document.getElementById('new-displayname').value.trim();
+    var password    = document.getElementById('new-password').value;
+    var roles       = Array.from(document.querySelectorAll('#new-roles-chips .adm-role-chip.selected')).map(function(c){ return c.dataset.role; });
+    var msg         = document.getElementById('msg-create');
+
+    if (!username || !displayName || !password) { showAdmMsg(msg, 'TOUS LES CHAMPS SONT OBLIGATOIRES', false); return; }
+    if (password.length < 6) { showAdmMsg(msg, 'MOT DE PASSE TROP COURT (MIN. 6 CARACTÈRES)', false); return; }
+    if (roles.length === 0) { showAdmMsg(msg, 'SÉLECTIONNE AU MOINS UN RÔLE', false); return; }
+
+    fetch(BACKEND_URL + '/api/admin/users', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username, displayName: displayName, password: password, roles: roles })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        showAdmMsg(msg, 'COMPTE CRÉÉ AVEC SUCCÈS', true);
+        document.getElementById('new-username').value = '';
+        document.getElementById('new-displayname').value = '';
+        document.getElementById('new-password').value = '';
+        document.querySelectorAll('#new-roles-chips .adm-role-chip').forEach(function(c){ c.classList.remove('selected'); });
+        adminLoadUsers();
+      } else {
+        showAdmMsg(msg, data.error || 'ERREUR', false);
+      }
+    })
+    .catch(function(){ showAdmMsg(msg, 'ERREUR SERVEUR', false); });
+  }
+
+  // ── Supprimer un membre ───────────────────────────────────
+  function adminDeleteUser(id, username) {
+    if (!confirm('Supprimer le compte "' + username + '" ? Cette action est irréversible.')) return;
+    fetch(BACKEND_URL + '/api/admin/users/' + id, { method: 'DELETE', credentials: 'include' })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.success) adminLoadUsers();
+        else alert(data.error || 'Erreur');
+      });
+  }
+
+  // ── Modale rôles ──────────────────────────────────────────
+  function openModalRoles(id, username, currentRoles) {
+    adminEditUserId = id;
+    document.getElementById('modal-roles-username').textContent = username;
+    document.querySelectorAll('#modal-roles-chips .adm-role-chip').forEach(function(c){
+      c.classList.toggle('selected', currentRoles.indexOf(c.dataset.role) !== -1);
+    });
+    document.getElementById('msg-roles').style.display = 'none';
+    document.getElementById('modal-roles').classList.add('open');
+  }
+  function closeModalRoles() { document.getElementById('modal-roles').classList.remove('open'); }
+
+  function adminSaveRoles() {
+    var roles = Array.from(document.querySelectorAll('#modal-roles-chips .adm-role-chip.selected')).map(function(c){ return c.dataset.role; });
+    var msg   = document.getElementById('msg-roles');
+    if (roles.length === 0) { showAdmMsg(msg, 'SÉLECTIONNE AU MOINS UN RÔLE', false); return; }
+    fetch(BACKEND_URL + '/api/admin/users/' + adminEditUserId + '/roles', {
+      method: 'PUT', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roles: roles })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.success) { showAdmMsg(msg, 'RÔLES MIS À JOUR', true); adminLoadUsers(); setTimeout(closeModalRoles, 1200); }
+      else showAdmMsg(msg, data.error || 'ERREUR', false);
+    });
+  }
+
+  // ── Modale reset MDP ──────────────────────────────────────
+  function openModalPassword(id, username) {
+    adminEditUserId = id;
+    document.getElementById('modal-password-username').textContent = username;
+    document.getElementById('modal-new-password').value = '';
+    document.getElementById('msg-password').style.display = 'none';
+    document.getElementById('modal-password').classList.add('open');
+  }
+  function closeModalPassword() { document.getElementById('modal-password').classList.remove('open'); }
+
+  function adminSavePassword() {
+    var pwd = document.getElementById('modal-new-password').value;
+    var msg = document.getElementById('msg-password');
+    if (pwd.length < 6) { showAdmMsg(msg, 'MOT DE PASSE TROP COURT (MIN. 6 CARACTÈRES)', false); return; }
+    fetch(BACKEND_URL + '/api/admin/users/' + adminEditUserId + '/password', {
+      method: 'PUT', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pwd })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.success) { showAdmMsg(msg, 'MOT DE PASSE RÉINITIALISÉ', true); setTimeout(closeModalPassword, 1200); }
+      else showAdmMsg(msg, data.error || 'ERREUR', false);
+    });
+  }
+
+  // ── Logs ──────────────────────────────────────────────────
+  function adminLoadLogs() {
+    fetch(BACKEND_URL + '/api/admin/logs', { credentials: 'include' })
+      .then(function(r){ return r.json(); })
+      .then(function(logs) {
+        if (!logs.length) {
+          document.getElementById('admin-logs-list').innerHTML = '<div style="font-family:Share Tech Mono,monospace;font-size:11px;color:rgba(255,255,255,0.2);padding:20px 14px;">Aucun log.</div>';
+          return;
+        }
+        var html = '';
+        logs.forEach(function(l) {
+          var typeClass = l.type === 'LOGIN_SUCCESS' || l.type === 'LOGOUT' ? 'ok' : l.type === 'ADMIN_ACTION' ? 'info' : 'fail';
+          var typeLabel = l.type === 'LOGIN_SUCCESS' ? 'CONNEXION' : l.type === 'LOGIN_FAIL' ? 'ECHEC' : l.type === 'LOGOUT' ? 'DÉCO.' : 'ADMIN';
+          var ts = new Date(l.timestamp);
+          var tsStr = ts.toLocaleDateString('fr-FR') + ' ' + ts.toLocaleTimeString('fr-FR');
+          html += '<div class="log-line">'
+            + '<span class="log-ts">' + escHtml(tsStr) + '</span>'
+            + '<span class="log-type ' + typeClass + '">' + typeLabel + '</span>'
+            + '<span class="log-user">' + escHtml(l.username) + '</span>'
+            + '<span class="log-detail">' + escHtml((l.ip || '') + (l.details ? ' — ' + l.details : '')) + '</span>'
+            + '</div>';
+        });
+        document.getElementById('admin-logs-list').innerHTML = html;
+      });
+  }
+
+  // ── Webhooks ──────────────────────────────────────────────
+  function adminLoadWebhooks() {
+    fetch(BACKEND_URL + '/api/admin/webhooks', { credentials: 'include' })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        document.getElementById('wh-form001').value = data.form001 || '';
+        document.getElementById('wh-form002').value = data.form002 || '';
+        document.getElementById('wh-form003').value = data.form003 || '';
+        document.getElementById('wh-dot-001').className = 'webhook-dot' + (data.form001 ? ' set' : '');
+        document.getElementById('wh-dot-002').className = 'webhook-dot' + (data.form002 ? ' set' : '');
+        document.getElementById('wh-dot-003').className = 'webhook-dot' + (data.form003 ? ' set' : '');
+      });
+  }
+
+  function adminSaveWebhooks() {
+    var msg = document.getElementById('msg-webhooks');
+    fetch(BACKEND_URL + '/api/admin/webhooks', {
+      method: 'PUT', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        form001: document.getElementById('wh-form001').value.trim(),
+        form002: document.getElementById('wh-form002').value.trim(),
+        form003: document.getElementById('wh-form003').value.trim(),
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data.success) { showAdmMsg(msg, 'WEBHOOKS ENREGISTRÉS', true); adminLoadWebhooks(); }
+      else showAdmMsg(msg, data.error || 'ERREUR', false);
+    });
+  }
+
+  // ── Helpers ───────────────────────────────────────────────
+  function toggleRoleChip(el) { el.classList.toggle('selected'); }
+
+  function showAdmMsg(el, text, ok) {
+    el.textContent = text;
+    el.className = 'adm-msg ' + (ok ? 'ok' : 'err');
+    el.style.display = 'block';
+    if (ok) setTimeout(function(){ el.style.display = 'none'; }, 3000);
+  }
+
+</script>
 </body>
 </html>
 
