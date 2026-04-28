@@ -1637,9 +1637,11 @@
         + '</div>';
 
       // Affiche les zones restreintes selon les droits
-      if (zoneDoa) zoneDoa.classList.toggle('visible', !!(userAccess.doa));
+      var isEM = (currentUser.roles || []).indexOf('ETAT_MAJOR') !== -1;
+      var hasDoa = isEM || (currentUser.roles || []).some(function(r){ return ['MCD','BCSO','SHERIFF_ACADEMY'].indexOf(r) !== -1; });
+      if (zoneDoa) zoneDoa.classList.toggle('visible', !!(userAccess.doa || hasDoa));
       var zoneAdmin = document.getElementById('zone-admin');
-      if (zoneAdmin) zoneAdmin.classList.toggle('visible', !!(userAccess.admin));
+      if (zoneAdmin) zoneAdmin.classList.toggle('visible', !!(userAccess.admin || isEM));
 
     } else {
       // Affiche bouton connexion
@@ -1748,7 +1750,8 @@
       return;
     }
     // Vérif accès admin
-    if (page === 'admin' && (!userAccess || !userAccess.admin)) {
+    var isEM = currentUser && (currentUser.roles || []).indexOf('ETAT_MAJOR') !== -1;
+    if (page === 'admin' && !isEM) {
       return;
     }
     // Charger les données admin à l'ouverture
