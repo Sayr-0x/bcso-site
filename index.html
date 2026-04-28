@@ -197,17 +197,18 @@
 
     /* Bouton accès admin sur page home */
     .admin-access-wrap {
-      display: none; max-width: 1100px; margin: -20px auto 0; padding: 0 40px 40px;
+      display: none; max-width: 1100px; margin: 0 auto; padding: 20px 40px 40px;
     }
     .admin-access-wrap.visible { display: block; }
     .admin-access-btn {
-      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
-      color: rgba(212,160,23,0.5); background: none;
-      border: 1px solid rgba(212,160,23,0.15); padding: 10px 24px;
+      font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 0.2em;
+      color: var(--gold); background: rgba(212,160,23,0.08);
+      border: 1px solid rgba(212,160,23,0.5); padding: 14px 32px;
       cursor: pointer; text-transform: uppercase; transition: all 0.2s;
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 10px; width: 100%;
+      justify-content: center;
     }
-    .admin-access-btn:hover { border-color: rgba(212,160,23,0.4); color: var(--gold); }
+    .admin-access-btn:hover { border-color: var(--gold); background: rgba(212,160,23,0.18); }
 
     body {
       font-family: 'Barlow Condensed', sans-serif;
